@@ -6,11 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // This will proxy requests starting with /api to your backend server
       "/api": {
         target: "https://cloud-file-storage-backend.vercel.app", // Your backend URL
         changeOrigin: true,
-        secure: false,
+        secure: true, // Generally true for HTTPS; you can omit it if using a valid SSL certificate
         rewrite: (path) => path.replace(/^\/api/, ""), // Optionally rewrite the path
       },
     },
