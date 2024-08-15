@@ -28,7 +28,7 @@ function App() {
       localStorage.removeItem('authenticated');
       setIsAuthenticated(false);
       alert('You have been logged out');
-    }, 300000); // 2 minutes
+    }, 120000); // 2 minutes
   };
 
   const handleLogin = () => {
