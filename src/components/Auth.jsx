@@ -42,47 +42,62 @@ const Auth = ({ onLogin }) => {
     };
 
     return (
-        <div className="flex mx-auto items-center justify-center min-h-screen bg-gray-900 w-full">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm animate-fadeIn">
-                <h2 className="text-2xl font-semibold text-center mb-6 text-gray-200">Login</h2>
-                <form onSubmit={handleSubmit}>
+        <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-4">
+        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-105 w-full max-w-xs sm:max-w-sm md:max-w-md animate-fadeIn">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-100">Welcome Back</h2>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="relative">
                     <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="Username"
-                        className="w-full px-4 py-2 mb-4 border border-gray-700 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out"
+                        className="w-full px-4 py-3 text-sm text-gray-200 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-600 transition duration-300 ease-in-out placeholder-gray-400"
                         required
                     />
+                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zM12 14a4 4 0 100-8 4 4 0 000 8zm4 2H8a2 2 0 00-2 2v1a2 2 0 002 2h8a2 2 0 002-2v-1a2 2 0 00-2-2z" />
+                        </svg>
+                    </div>
+                </div>
+                <div className="relative">
                     <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
-                        className="w-full px-4 py-2 mb-6 border border-gray-700 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out"
+                        className="w-full px-4 py-3 text-sm text-gray-200 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-600 transition duration-300 ease-in-out placeholder-gray-400"
                         required
                     />
-                    {error && <p className="text-red-500 text-center mb-4 animate-shake">{error}</p>}
-                    <button
-                        type="submit"
-                        className={`w-full ${loading ? 'bg-gray-600' : 'bg-blue-600'} ${loading ? 'hover:bg-gray-600' : 'hover:bg-blue-700'} text-white font-semibold py-2 rounded-lg transition duration-300 ease-in-out`}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <span className="flex items-center justify-center">
-                                <svg className="animate-spin h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8l4 4-4 4V12H4z"></path>
-                                </svg>
-                                Logging in...
-                            </span>
-                        ) : (
-                            'Login'
-                        )}
-                    </button>
-                </form>
-            </div>
+                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11V5m0 6v6m6 0H6" />
+                        </svg>
+                    </div>
+                </div>
+                {error && <p className="text-red-500 text-center animate-pulse">{error}</p>}
+                <button
+                    type="submit"
+                    className={`w-full py-3 rounded-lg text-sm font-semibold text-white transition duration-300 ease-in-out ${loading ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'} shadow-lg hover:shadow-xl transform hover:-translate-y-1`}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <span className="flex items-center justify-center">
+                            <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8l4 4-4 4V12H4z"></path>
+                            </svg>
+                            Logging in...
+                        </span>
+                    ) : (
+                        'Login'
+                    )}
+                </button>
+            </form>
         </div>
+    </div>
+    
     );
 };
 

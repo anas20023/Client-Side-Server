@@ -14,29 +14,19 @@ const Statistics = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const cachedTotalFiles = localStorage.getItem('totalFiles');
                 const statsResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/statistics');
                 if (!statsResponse.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const statsResult = await statsResponse.json();
+                setData(statsResult);
 
-                if (
-                    cachedTotalFiles === null ||
-                    Number(cachedTotalFiles) !== statsResult.totalFiles ||
-                    statsResult.storageUsed !== data.storageUsed ||
-                    statsResult.downloads !== data.downloads
-                ) {
-                    setData(statsResult);
-                    localStorage.setItem('totalFiles', statsResult.totalFiles);
-
-                    const formatsResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/file-formats');
-                    if (!formatsResponse.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    const formatsResult = await formatsResponse.json();
-                    setFileFormats(formatsResult.formats);
+                const formatsResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/file-formats');
+                if (!formatsResponse.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                const formatsResult = await formatsResponse.json();
+                setFileFormats(formatsResult.formats);
 
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -47,7 +37,7 @@ const Statistics = () => {
         };
 
         fetchData();
-    }, [data]);
+    }, []);
 
     const pieData = useMemo(() => {
         return fileFormats.map(([format, count]) => ({ name: format, value: count }));
@@ -71,29 +61,28 @@ const Statistics = () => {
     if (error) return <p className="text-red-600 text-center mt-4">Error: {error}</p>;
 
     return (
-        <section id="statistics" className="p-8 bg-white text-gray-800 rounded-lg shadow-lg">
-            <h3 className="text-3xl font-semibold mb-8 text-center">Statistics</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                <div className="bg-gray-100 p-8 rounded-lg shadow-md flex flex-col items-center">
-                    <h4 className="text-xl font-bold mb-3">Total Files</h4>
-                    <p className="text-5xl font-bold text-blue-600">{data.totalFiles}</p>
+        <section id="statistics" className="p-4 sm:p-6 lg:p-8 bg-white text-gray-800 rounded-lg shadow-lg">
+            <h3 className="text-2xl sm:text-3xl font-semibold mb-6 text-center">Statistics</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 mb-8">
+                <div className="bg-gray-100 p-6 sm:p-8 rounded-lg shadow-md flex flex-col items-center">
+                    <h4 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">Total Files</h4>
+                    <p className="text-4xl sm:text-5xl font-bold text-blue-600">{data.totalFiles}</p>
                 </div>
-                <div className="bg-gray-100 p-8 rounded-lg shadow-md flex flex-col items-center">
-                    <h4 className="text-xl font-bold mb-3">Storage Used</h4>
-                    <p className="text-5xl font-bold text-green-600">{data.storageUsed} GB</p>
+                <div className="bg-gray-100 p-6 sm:p-8 rounded-lg shadow-md flex flex-col items-center">
+                    <h4 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">Storage Used</h4>
+                    <p className="text-4xl sm:text-5xl font-bold text-green-600">{data.storageUsed} GB</p>
                 </div>
             </div>
             <div className="flex flex-col lg:flex-row lg:space-x-8 space-y-8 lg:space-y-0 mt-8">
                 <div className="w-full lg:w-1/2 p-4">
                     <h4 className="text-xl font-bold mb-4 text-center lg:text-left">File Types in Storage</h4>
-                    <PieChart width={400} height={400} className="mx-auto lg:mx-0">
+                    <PieChart width={300} height={300} className="mx-auto lg:mx-0">
                         <Pie
                             data={pieData}
                             dataKey="value"
                             nameKey="name"
-                            outerRadius="85%"
-                            label
-                            isAnimationActive
+                            outerRadius={150}
+                            fill="#8884d8"
                         >
                             {pieData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -108,7 +97,7 @@ const Statistics = () => {
                         {pieData.map((entry, index) => (
                             <li key={`legend-${index}`} className="flex items-center mb-4">
                                 <div
-                                    className="w-6 h-6 mr-3 rounded-full"
+                                    className="w-5 h-5 sm:w-6 sm:h-6 mr-3 rounded-full"
                                     style={{ backgroundColor: COLORS[index % COLORS.length] }}
                                 />
                                 <span className='text-base font-medium'>{entry.name} ({entry.value})</span>

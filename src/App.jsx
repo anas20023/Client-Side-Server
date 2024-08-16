@@ -5,12 +5,12 @@ import Aside from './components/Aside';
 import Statistics from './components/Statistics';
 import Files from './components/Files';
 import Settings from './components/Settings';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Auth from './components/Auth';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [logoutTimer, setLogoutTimer] = useState(null);
+  const logoutTimerRef = useRef(null);
 
   useEffect(() => {
     const auth = localStorage.getItem('authenticated');
@@ -20,39 +20,38 @@ function App() {
     }
 
     const resetTimer = () => {
-      clearTimeout(logoutTimer);
+      clearTimeout(logoutTimerRef.current);
       startAutoLogoutTimer();
     };
 
     window.addEventListener('mousemove', resetTimer);
 
     return () => {
-      clearTimeout(logoutTimer);
+      clearTimeout(logoutTimerRef.current);
       window.removeEventListener('mousemove', resetTimer);
     };
-  }, [logoutTimer]);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   const startAutoLogoutTimer = useCallback(() => {
-    const timer = setTimeout(() => {
+    logoutTimerRef.current = setTimeout(() => {
       if (isAuthenticated) {
         handleLogout();
         //alert('You have been logged out due to inactivity');
       }
     }, 120000); // 2 minutes
-    setLogoutTimer(timer);
   }, [isAuthenticated]);
 
-  const handleLogin = () => {
+  const handleLogin = useCallback(() => {
     localStorage.setItem('authenticated', 'true');
     setIsAuthenticated(true);
     startAutoLogoutTimer();
-  };
+  }, [startAutoLogoutTimer]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('authenticated');
     setIsAuthenticated(false);
-    clearTimeout(logoutTimer);
-  };
+    clearTimeout(logoutTimerRef.current);
+  }, []);
 
   return (
     <Router>

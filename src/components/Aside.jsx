@@ -31,7 +31,7 @@ const Aside = ({ onLogout }) => {
             {/* Menu Icon for Smaller Screens */}
             {!isOpen && (
                 <button
-                    className="md:hidden fixed top-4 right-4 z-50 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="md:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     onClick={toggleSidebar}
                     aria-label="Open sidebar"
                 >
@@ -41,40 +41,40 @@ const Aside = ({ onLogout }) => {
 
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-900 text-white p-6 shadow-xl`}
+                className={`fixed  inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-900 text-white p-6 shadow-xl`}
                 aria-hidden={!isOpen}
             >
-                <h2 className="text-3xl font-semibold mb-8">Dashboard</h2>
+                <h2 className="text-xl md:text-2xl font-semibold mb-5 md:mb-6">Dashboard</h2>
                 <nav>
                     <ul>
-                        <li className="mb-4 flex items-center">
+                        <li className="mb-3 flex items-center">
                             <Link
                                 to="/statistics"
-                                className="flex items-center py-3 px-4 rounded hover:bg-gray-700 w-full transition-colors duration-200"
+                                className="flex items-center py-2 md:py-2.5 px-3 md:px-3.5 rounded hover:bg-gray-700 w-full transition-colors duration-200"
                                 onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
                             >
-                                <FontAwesomeIcon icon={faChartArea} className="h-5 w-5 mr-3 text-white" />
-                                <span className="text-lg">Statistics</span>
+                                <FontAwesomeIcon icon={faChartArea} className="h-4 w-4 md:h-5 md:w-5 mr-3 text-white" />
+                                <span className="text-sm md:text-base">Statistics</span>
                             </Link>
                         </li>
-                        <li className="mb-4 flex items-center">
+                        <li className="mb-3 flex items-center">
                             <Link
                                 to="/files"
-                                className="flex items-center py-3 px-4 rounded hover:bg-gray-700 w-full transition-colors duration-200"
+                                className="flex items-center py-2 md:py-2.5 px-3 md:px-3.5 rounded hover:bg-gray-700 w-full transition-colors duration-200"
                                 onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
                             >
-                                <FontAwesomeIcon icon={faFolderClosed} className="h-5 w-5 mr-3 text-white" />
-                                <span className="text-lg">Manage Files</span>
+                                <FontAwesomeIcon icon={faFolderClosed} className="h-4 w-4 md:h-5 md:w-5 mr-3 text-white" />
+                                <span className="text-sm md:text-base">Manage Files</span>
                             </Link>
                         </li>
-                        <li className="mb-4 flex items-center">
+                        <li className="mb-3 flex items-center">
                             <Link
                                 to="/settings"
-                                className="flex items-center py-3 px-4 rounded hover:bg-gray-700 w-full transition-colors duration-200"
+                                className="flex items-center py-2 md:py-2.5 px-3 md:px-3.5 rounded hover:bg-gray-700 w-full transition-colors duration-200"
                                 onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
                             >
-                                <FontAwesomeIcon icon={faGear} className="h-5 w-5 mr-3 text-white" />
-                                <span className="text-lg">Settings</span>
+                                <FontAwesomeIcon icon={faGear} className="h-4 w-4 md:h-5 md:w-5 mr-3 text-white" />
+                                <span className="text-sm md:text-base">Show System</span>
                             </Link>
                         </li>
                     </ul>
@@ -82,10 +82,10 @@ const Aside = ({ onLogout }) => {
                 {/* Logout Button */}
                 <button
                     onClick={onLogout}
-                    className="w-full flex items-center justify-center bg-red-500 text-white py-3 px-4 rounded hover:bg-red-600 transition-colors duration-200 mt-10 shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="w-full flex items-center justify-center bg-red-500 text-white py-2 md:py-2.5 px-3 md:px-3.5 rounded hover:bg-red-600 transition-colors duration-200 mt-6 md:mt-8 shadow-md focus:outline-none focus:ring-2 focus:ring-red-400"
                     aria-label="Logout"
                 >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="h-5 w-5 mr-2 text-white" />
+                    <FontAwesomeIcon icon={faSignOutAlt} className="h-4 w-4 md:h-5 md:w-5 mr-2 text-white" />
                     Logout
                 </button>
             </aside>

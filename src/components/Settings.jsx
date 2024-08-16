@@ -1,70 +1,68 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 
+const getSystemInfo = () => {
+    const userAgent = navigator.userAgent;
+    const platform = navigator.platform;
+    const screenResolution = `${window.screen.width} x ${window.screen.height}`;
+    const language = navigator.language;
+
+    // Additional system information
+    const connection = navigator.connection ? navigator.connection.effectiveType : 'Unavailable';
+    const hardwareConcurrency = navigator.hardwareConcurrency || 'Unavailable';
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    return {
+        userAgent,
+        platform,
+        screenResolution,
+        language,
+        connection,
+        hardwareConcurrency,
+        timeZone,
+    };
+};
+
 const Settings = () => {
+    const systemInfo = getSystemInfo();
+
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
-            <div className="bg-white shadow-lg rounded-lg p-8">
-                <h1 className="text-3xl font-bold mb-6">Settings</h1>
-                <p className="text-gray-700 mb-6">
-                    Customize your settings below. Here you can adjust preferences and manage your account.
+        <div className="min-h-screen bg-gray-50 p-8">
+            <div className="bg-white shadow-xl rounded-2xl p-10 max-w-4xl mx-auto">
+                <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">
+                    Device Information
+                </h1>
+                <p className="text-lg text-gray-600 mb-12 text-center">
+                    Below is the detailed system information of your device.
                 </p>
-                <div className="space-y-6">
-                    <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                        <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
-                        <form>
-                            <div className="mb-4">
-                                <label className="block text-gray-600 mb-2" htmlFor="email">
-                                    Email Address
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    className="w-full border border-gray-300 rounded-lg p-2"
-                                    placeholder="Enter your email"
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-600 mb-2" htmlFor="password">
-                                    Password
-                                </label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    className="w-full border border-gray-300 rounded-lg p-2"
-                                    placeholder="Enter your new password"
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition duration-300"
-                            >
-                                Save Changes
-                            </button>
-                        </form>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Operating System</h2>
+                        <p className="text-gray-600">{systemInfo.platform}</p>
                     </div>
-                    <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-                        <h2 className="text-xl font-semibold mb-4">Notification Settings</h2>
-                        <form>
-                            <div className="mb-4">
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox text-blue-600"
-                                    />
-                                    <span className="ml-2 text-gray-600">Receive email notifications</span>
-                                </label>
-                            </div>
-                            <div className="mb-4">
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox text-blue-600"
-                                    />
-                                    <span className="ml-2 text-gray-600">Receive SMS notifications</span>
-                                </label>
-                            </div>
-                        </form>
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Browser</h2>
+                        <p className="text-gray-600">{systemInfo.userAgent}</p>
+                    </div>
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Screen Resolution</h2>
+                        <p className="text-gray-600">{systemInfo.screenResolution}</p>
+                    </div>
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Language</h2>
+                        <p className="text-gray-600">{systemInfo.language}</p>
+                    </div>
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Network Connection</h2>
+                        <p className="text-gray-600">{systemInfo.connection}</p>
+                    </div>
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-700">CPU Cores</h2>
+                        <p className="text-gray-600">{systemInfo.hardwareConcurrency}</p>
+                    </div>
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Time Zone</h2>
+                        <p className="text-gray-600">{systemInfo.timeZone}</p>
                     </div>
                 </div>
             </div>
