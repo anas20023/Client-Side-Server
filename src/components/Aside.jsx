@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faGear, faFolderClosed, faChartArea } from '@fortawesome/free-solid-svg-icons';
 
-const Aside = () => {
+const Aside = ({ onLogout }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -11,12 +12,11 @@ const Aside = () => {
     };
 
     useEffect(() => {
-        // Automatically open the sidebar on smaller screens when the component is mounted
         const handleResize = () => {
-            if (window.innerWidth < 768) {
-                setIsOpen(false);
-            } else {
+            if (window.innerWidth >= 768) {
                 setIsOpen(true);
+            } else {
+                setIsOpen(false);
             }
         };
 
@@ -49,7 +49,7 @@ const Aside = () => {
                             <Link
                                 to="/statistics"
                                 className="block py-2 px-4 rounded hover:bg-blue-700 w-full"
-                                onClick={() => setIsOpen(false)}  // Close sidebar on link click for small screens
+                                onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
                             >
                                 <FontAwesomeIcon icon={faChartArea} className="h-4 w-4 mr-2 text-white" />
                                 Statistics
@@ -59,7 +59,7 @@ const Aside = () => {
                             <Link
                                 to="/files"
                                 className="block py-2 px-4 rounded hover:bg-blue-700 w-full"
-                                onClick={() => setIsOpen(false)}  // Close sidebar on link click for small screens
+                                onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
                             >
                                 <FontAwesomeIcon icon={faFolderClosed} className="h-4 w-4 mr-2 text-white" />
                                 Manage Files
@@ -69,7 +69,7 @@ const Aside = () => {
                             <Link
                                 to="/settings"
                                 className="block py-2 px-4 rounded hover:bg-blue-700 w-full"
-                                onClick={() => setIsOpen(false)}  // Close sidebar on link click for small screens
+                                onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
                             >
                                 <FontAwesomeIcon icon={faGear} className="h-4 w-4 mr-2 text-white" />
                                 Settings
@@ -77,6 +77,13 @@ const Aside = () => {
                         </li>
                     </ul>
                 </nav>
+                {/* Logout Button */}
+                <button
+                    onClick={onLogout}
+                    className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 mt-8"
+                >
+                    Logout
+                </button>
             </aside>
 
             {/* Overlay for mobile when the sidebar is open */}
