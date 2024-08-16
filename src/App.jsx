@@ -19,24 +19,20 @@ function App() {
       startAutoLogoutTimer();
     }
 
-    const resetTimer = () => {
-      clearTimeout(logoutTimerRef.current);
-      startAutoLogoutTimer();
-    };
-
-    window.addEventListener('mousemove', resetTimer);
-
     return () => {
       clearTimeout(logoutTimerRef.current);
-      window.removeEventListener('mousemove', resetTimer);
     };
   }, []); // Empty dependency array ensures this runs only once on mount
 
   const startAutoLogoutTimer = useCallback(() => {
+    // Clear any existing timer
+    clearTimeout(logoutTimerRef.current);
+
+    // Set a new timer for 2 minutes
     logoutTimerRef.current = setTimeout(() => {
       if (isAuthenticated) {
         handleLogout();
-        //alert('You have been logged out due to inactivity');
+        // alert('You have been logged out due to inactivity');
       }
     }, 120000); // 2 minutes
   }, [isAuthenticated]);
