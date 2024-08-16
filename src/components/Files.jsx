@@ -58,23 +58,23 @@ const Files = () => {
         }
     };
 
-    const handleDownloadFile = async (fileURL, id) => {
+    const handleDownloadFile = (fileURL, id) => {
         setDownloadingFileId(id);
         try {
-            const response = await axios.get(fileURL, { responseType: 'blob' });
-            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+            // Create a temporary link element
             const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = fileURL.split('/').pop();
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            link.href = fileURL; // URL of the file to download
+            link.download = fileURL.split('/').pop(); // Use the file name as download name
+            document.body.appendChild(link); // Append to body to make it clickable
+            link.click(); // Trigger the download
+            document.body.removeChild(link); // Remove the link from the document
         } catch (error) {
             console.error('Error downloading file:', error);
         } finally {
             setDownloadingFileId(null);
         }
     };
+    
 
     const handleDeleteFile = async (id) => {
         setIsDeletingId(id);
