@@ -61,11 +61,16 @@ const Files = () => {
         }
     };
 
-    const handleDownloadFile = (fileURL, id) => {
+    const handleDownloadFile = async (fileURL, id) => {
         setDownloadingFileId(id);
         try {
+            // Check if fileURL is valid
+            if (!fileURL) throw new Error('Invalid file URL');
+
+            const response = await axios.get(fileURL, { responseType: 'blob' });
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
             const link = document.createElement('a');
-            link.href = fileURL;
+            link.href = window.URL.createObjectURL(blob);
             link.download = fileURL.split('/').pop();
             document.body.appendChild(link);
             link.click();
@@ -81,13 +86,14 @@ const Files = () => {
         setIsDeletingId(id);
         try {
             await axios.delete(`https://cloud-file-storage-backend.vercel.app/api/files/${id}`);
-            fetchFiles();
+            fetchFiles();  // Refresh the file list after deletion
         } catch (error) {
             console.error('Error deleting file:', error);
         } finally {
             setIsDeletingId(null);
         }
     };
+
 
     return (
         <section id="files" className="p-6 bg-gray-100 min-h-screen">
