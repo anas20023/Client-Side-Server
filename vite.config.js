@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "https://cloud-file-storage-backend.vercel.app", // Your backend URL
-        changeOrigin: true,
+        changeOrigin: false,
         secure: true, // Generally true for HTTPS; you can omit it if using a valid SSL certificate
         rewrite: (path) => path.replace(/^\/api/, ""), // Optionally rewrite the path
       },
