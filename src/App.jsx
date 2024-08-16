@@ -21,8 +21,10 @@ function App() {
 
   const autoLogout = () => {
     setTimeout(() => {
-      handleLogout();
-      alert('You have been logged out due to inactivity');
+      if (isAuthenticated) {
+        handleLogout();
+        alert('You have been logged out due to inactivity');
+      }
     }, 120000); // 2 minutes
   };
 
