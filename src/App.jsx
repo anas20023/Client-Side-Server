@@ -5,38 +5,53 @@ import Aside from './components/Aside';
 import Statistics from './components/Statistics';
 import Files from './components/Files';
 import Settings from './components/Settings';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Auth from './components/Auth';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [logoutTimer, setLogoutTimer] = useState(null);
 
   useEffect(() => {
     const auth = localStorage.getItem('authenticated');
     if (auth) {
       setIsAuthenticated(true);
-      autoLogout();
+      startAutoLogoutTimer();
     }
-  }, []);
 
-  const autoLogout = () => {
-    setTimeout(() => {
+    const resetTimer = () => {
+      clearTimeout(logoutTimer);
+      startAutoLogoutTimer();
+    };
+
+    window.addEventListener('mousemove', resetTimer);
+
+    return () => {
+      clearTimeout(logoutTimer);
+      window.removeEventListener('mousemove', resetTimer);
+    };
+  }, [logoutTimer]);
+
+  const startAutoLogoutTimer = useCallback(() => {
+    const timer = setTimeout(() => {
       if (isAuthenticated) {
         handleLogout();
-        alert('You have been logged out due to inactivity');
+        //alert('You have been logged out due to inactivity');
       }
     }, 120000); // 2 minutes
-  };
+    setLogoutTimer(timer);
+  }, [isAuthenticated]);
 
   const handleLogin = () => {
     localStorage.setItem('authenticated', 'true');
     setIsAuthenticated(true);
-    autoLogout();
+    startAutoLogoutTimer();
   };
 
   const handleLogout = () => {
     localStorage.removeItem('authenticated');
     setIsAuthenticated(false);
+    clearTimeout(logoutTimer);
   };
 
   return (
