@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState, useMemo } from 'react';
 import { Tooltip, PieChart, Pie, Cell } from 'recharts';
 
@@ -70,7 +71,18 @@ const Statistics = () => {
             </div>
         );
     }
-
+    const RADIAN = Math.PI / 180;
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+      
+        return (
+          <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+            {`${(percent * 100).toFixed(0)}%`}
+          </text>
+        );
+      };
 
     if (error) return <p>Error: {error}</p>;
 
@@ -91,17 +103,20 @@ const Statistics = () => {
                 <div className="w-full md:w-1/2 p-4">
                     <h4 className="text-lg font-bold mb-2">File Types in Storage</h4>
                     <PieChart width={300} height={300} className="mx-auto">
-                        <Pie
-                            data={pieData}
-                            dataKey="value"
-                            nameKey="name"
-                            outerRadius="80%"
-                            label
-                        >
-                            {pieData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
+                       <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
                         <Tooltip />
                     </PieChart>
                 </div>
