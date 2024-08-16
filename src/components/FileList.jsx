@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-// FileList.jsx
 import React from 'react';
 import FileItem from './FileItem';
 
