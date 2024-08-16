@@ -135,7 +135,7 @@ function App() {
                 />
                 <Route path="/settings" element={<Settings />} /> {/* Add your settings route */}
                 {/* You can add more routes here */}
-                <Route path="*" element={<Navigate to="/files" />} />
+                <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </main>
           </>
