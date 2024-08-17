@@ -25,7 +25,7 @@ const Files = () => {
         }
     };
 
-    const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+    const MAX_FILE_SIZE = 200 * 1024 * 1024; // 500MB
 
     const handleDrop = (acceptedFiles) => {
         const filteredFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
