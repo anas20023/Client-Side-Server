@@ -44,15 +44,15 @@ const Files = () => {
             alert('Please select files and enter file names.');
             return;
         }
-    
+
         setLoading(true);
-    
+
         const formData = new FormData();
         fileContents.forEach((fileContent) => {
             formData.append('files', fileContent);
         });
         formData.append('fileNames', JSON.stringify(fileNames));
-    
+
         try {
             const response = await axios.post(
                 'https://cloud-file-storage-backend.vercel.app/api/upload',
@@ -63,7 +63,7 @@ const Files = () => {
                     },
                 }
             );
-    
+
             console.log('Response:', response.data);
             setFileContents([]);
             setFileNames([]);
@@ -74,7 +74,7 @@ const Files = () => {
             setLoading(false);
         }
     };
-    
+
 
 
     const handleDownloadFile = (fileURL, id) => {
