@@ -55,12 +55,16 @@ const Files = () => {
 
         try {
             const response = await axios.post(
-                'https://cloud-file-storage-backend.vercel.app/api/upload',
+                'https://cloud-file-storage-backend.onrender.com/api/upload',
                 formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        console.log(`${percentCompleted} Uploaded `)
+                    }
                 }
             );
 
@@ -74,9 +78,6 @@ const Files = () => {
             setLoading(false);
         }
     };
-
-
-
     const handleDownloadFile = (fileURL, id) => {
         setDownloadingFileId(id);
         try {
