@@ -58,35 +58,24 @@ const Files = () => {
                 'https://cloud-file-storage-backend.vercel.app/api/upload',
                 formData,
                 {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    onUploadProgress: (progressEvent) => {
-                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        console.log(`Upload progress: ${percentCompleted}%`);
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
                     },
                 }
             );
     
-            if (response.status === 200) {
-                console.log('Files uploaded successfully:', response.data);
-                setFileContents([]);
-                setFileNames([]);
-                fetchFiles();
-            } else {
-                console.error('Unexpected response during file upload:', response);
-            }
+            console.log('Response:', response.data);
+            setFileContents([]);
+            setFileNames([]);
+            fetchFiles();
         } catch (error) {
-            if (error.response) {
-                console.error('Server responded with an error:', error.response.data);
-            } else if (error.request) {
-                console.error('No response received from the server:', error.request);
-            } else {
-                console.error('Error during file upload:', error.message);
-            }
+            console.error('Error during file upload:', error);
         } finally {
             setLoading(false);
         }
     };
     
+
 
     const handleDownloadFile = (fileURL, id) => {
         setDownloadingFileId(id);
