@@ -44,28 +44,49 @@ const Files = () => {
             alert('Please select files and enter file names.');
             return;
         }
-
+    
         setLoading(true);
-
+    
         const formData = new FormData();
         fileContents.forEach((fileContent) => {
             formData.append('files', fileContent);
         });
         formData.append('fileNames', JSON.stringify(fileNames));
-
+    
         try {
-            await axios.post('https://cloud-file-storage-backend.vercel.app/api/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            setFileContents([]);
-            setFileNames([]);
-            fetchFiles();
+            const response = await axios.post(
+                'https://cloud-file-storage-backend.vercel.app/api/upload',
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        console.log(`Upload progress: ${percentCompleted}%`);
+                    },
+                }
+            );
+    
+            if (response.status === 200) {
+                console.log('Files uploaded successfully:', response.data);
+                setFileContents([]);
+                setFileNames([]);
+                fetchFiles();
+            } else {
+                console.error('Unexpected response during file upload:', response);
+            }
         } catch (error) {
-            console.error('Error during file upload:', error);
+            if (error.response) {
+                console.error('Server responded with an error:', error.response.data);
+            } else if (error.request) {
+                console.error('No response received from the server:', error.request);
+            } else {
+                console.error('Error during file upload:', error.message);
+            }
         } finally {
             setLoading(false);
         }
     };
+    
 
     const handleDownloadFile = (fileURL, id) => {
         setDownloadingFileId(id);
