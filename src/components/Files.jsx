@@ -25,10 +25,19 @@ const Files = () => {
         }
     };
 
+    const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+
     const handleDrop = (acceptedFiles) => {
-        setFileContents(acceptedFiles);
-        setFileNames(acceptedFiles.map(file => file.name));
+        const filteredFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
+
+        if (filteredFiles.length !== acceptedFiles.length) {
+            alert("Some files exceed the size limit and won't be uploaded.");
+        }
+
+        setFileContents(filteredFiles);
+        setFileNames(filteredFiles.map(file => file.name));
     };
+
 
     const handleUpload = async () => {
         if (fileContents.length === 0 || fileNames.length === 0) {
@@ -74,7 +83,7 @@ const Files = () => {
             setDownloadingFileId(null);
         }
     };
-    
+
 
     const handleDeleteFile = async (id) => {
         setIsDeletingId(id);
