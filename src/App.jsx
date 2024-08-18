@@ -7,6 +7,7 @@ import Files from './components/Files';
 import Settings from './components/Settings';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Auth from './components/Auth';
+import WeatherBoard from './components/Weather'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,6 +58,7 @@ function App() {
             <Aside onLogout={handleLogout} />
             <main className="flex-1 p-6">
               <Routes>
+                <Route path='/weather' element={<WeatherBoard />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/files" element={<Files />} />
                 <Route path="/settings" element={<Settings />} />

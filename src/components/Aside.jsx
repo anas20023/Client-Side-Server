@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faGear, faFolderClosed, faChartArea, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faGear, faFolderClosed, faChartArea, faSignOutAlt, faCloudMoonRain } from '@fortawesome/free-solid-svg-icons';
 
 const Aside = ({ onLogout }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,7 @@ const Aside = ({ onLogout }) => {
             {/* Menu Icon for Smaller Screens */}
             {!isOpen && (
                 <button
-                    className="md:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="md:hidden font-[inter] fixed top-4 left-4 z-50 bg-gray-800 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     onClick={toggleSidebar}
                     aria-label="Open sidebar"
                 >
@@ -65,6 +65,16 @@ const Aside = ({ onLogout }) => {
                             >
                                 <FontAwesomeIcon icon={faFolderClosed} className="h-4 w-4 md:h-5 md:w-5 mr-3 text-white" />
                                 <span className="text-sm md:text-base">Manage Files</span>
+                            </Link>
+                        </li>
+                        <li className="mb-3 flex items-center">
+                            <Link
+                                to="/weather"
+                                className="flex items-center py-2 md:py-2.5 px-3 md:px-3.5 rounded hover:bg-gray-700 w-full transition-colors duration-200"
+                                onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
+                            >
+                                <FontAwesomeIcon icon={faCloudMoonRain} className="h-4 w-4 md:h-5 md:w-5 mr-3 text-white" />
+                                <span className="text-sm md:text-base">Weather</span>
                             </Link>
                         </li>
                         <li className="mb-3 flex items-center">
