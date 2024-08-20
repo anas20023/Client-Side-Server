@@ -8,6 +8,7 @@ import Settings from './components/Settings';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Auth from './components/Auth';
 import WeatherBoard from './components/Weather'
+import EditorUI from './components/Editor'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -62,6 +63,7 @@ function App() {
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/files" element={<Files />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/editor" element={<EditorUI />} />
                 <Route path="*" element={<Navigate to="/statistics" />} />
               </Routes>
             </main>

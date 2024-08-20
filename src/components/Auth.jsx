@@ -13,7 +13,7 @@ const Auth = ({ onLogin }) => {
         e.preventDefault();
         setError('');
         setLoading(true);
-        console.log(username, password);
+       // console.log(username, password);
         try {
             const response = await fetch('https://cloud-file-storage-backend.vercel.app/api/authenticate', {
                 method: 'POST',
