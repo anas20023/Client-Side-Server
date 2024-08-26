@@ -80,7 +80,7 @@ const Files = () => {
             setFileNames([]);
             fetchFiles(); // Refresh file list after upload
         } catch (error) {
-            console.error('Error during file upload:', error);
+           // console.error('Error during file upload:', error);
             setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' }); // Error message
         } finally {
             setLoading(false);

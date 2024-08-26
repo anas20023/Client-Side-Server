@@ -13,7 +13,7 @@ const UploadSection = ({ fileNames, handleDrop, handleUpload, loading, uploadPro
         <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
             <h4 className="text-xl font-bold mb-4">Upload Files</h4>
             <div className="flex flex-col items-center">
-                <div {...getRootProps({ className: 'border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer w-full max-w-lg' })}>
+                <div {...getRootProps({ className: 'border-2 border-dashed border-gray-300 pt-8 rounded-lg  cursor-pointer w-full max-w-6xl h-24' })}>
                     <input {...getInputProps()} />
                     <p className="text-center text-gray-500">Drag & drop files here, or click to select files</p>
                     {fileNames.length > 0 && (
