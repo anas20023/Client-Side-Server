@@ -3,7 +3,7 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 
-const UploadSection = ({ fileNames, handleDrop, handleUpload, loading }) => {
+const UploadSection = ({ fileNames, handleDrop, handleUpload, loading, uploadProgress }) => {
     const { getRootProps, getInputProps } = useDropzone({
         onDrop: handleDrop,
         multiple: true,
@@ -37,7 +37,7 @@ const UploadSection = ({ fileNames, handleDrop, handleUpload, loading }) => {
                             <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 12a8 8 0 018-8 8 8 0 018 8 8 8 0 01-8 8 8 8 0 01-8-8z" />
                             </svg>
-                            <span>Uploading...</span>
+                            <span>{`Uploading... ${uploadProgress}%`}</span>
                         </span>
                     ) : (
                         'Upload'

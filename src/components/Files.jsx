@@ -3,14 +3,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import UploadSection from './UploadSection';
 import FileList from './FileList';
+import Notification from './Notification';
 
 const Files = () => {
     const [files, setFiles] = useState([]);
     const [fileContents, setFileContents] = useState([]);
     const [fileNames, setFileNames] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0); // State for upload progress
     const [isDeletingId, setIsDeletingId] = useState(null);
     const [downloadingFileId, setDownloadingFileId] = useState(null);
+    const [notification, setNotification] = useState({ type: '', message: '' });
+
 
     useEffect(() => {
         fetchFiles();
@@ -25,7 +29,7 @@ const Files = () => {
         }
     };
 
-    const MAX_FILE_SIZE = 200 * 1024 * 1024; // 500MB
+    const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
 
     const handleDrop = (acceptedFiles) => {
         const filteredFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
@@ -38,14 +42,14 @@ const Files = () => {
         setFileNames(filteredFiles.map(file => file.name));
     };
 
-
     const handleUpload = async () => {
         if (fileContents.length === 0 || fileNames.length === 0) {
-            alert('Please select files and enter file names.');
+            alert('Please select files to upload.');
             return;
         }
 
         setLoading(true);
+        setUploadProgress(0); // Ensure progress starts at 0
 
         const formData = new FormData();
         fileContents.forEach((fileContent) => {
@@ -54,7 +58,7 @@ const Files = () => {
         formData.append('fileNames', JSON.stringify(fileNames));
 
         try {
-            const response = await axios.post(
+            await axios.post(
                 'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload',
                 formData,
                 {
@@ -62,32 +66,37 @@ const Files = () => {
                         'Content-Type': 'multipart/form-data',
                     },
                     onUploadProgress: (progressEvent) => {
-                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        //console.log(`${percentCompleted} Uploaded `)
+                        // Check if total is not zero to avoid division by zero
+                        if (progressEvent.total > 0) {
+                            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                            setUploadProgress(percentCompleted); // Update progress percentage
+                        }
                     }
                 }
             );
 
-            console.log('Response:', response.data);
+            setNotification({ type: 'success', message: 'Files uploaded successfully!' }); // Success message
             setFileContents([]);
             setFileNames([]);
-            fetchFiles();
+            fetchFiles(); // Refresh file list after upload
         } catch (error) {
             console.error('Error during file upload:', error);
+            setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' }); // Error message
         } finally {
             setLoading(false);
+            setUploadProgress(0); // Reset progress after upload
         }
     };
+
     const handleDownloadFile = (fileURL, id) => {
         setDownloadingFileId(id);
         try {
-            // Create a temporary link element
             const link = document.createElement('a');
-            link.href = fileURL; // URL of the file to download
-            link.download = fileURL.split('/').pop(); // Use the file name as download name
-            document.body.appendChild(link); // Append to body to make it clickable
-            link.click(); // Trigger the download
-            document.body.removeChild(link); // Remove the link from the document
+            link.href = fileURL;
+            link.download = fileURL.split('/').pop();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         } catch (error) {
             console.error('Error downloading file:', error);
         } finally {
@@ -95,12 +104,11 @@ const Files = () => {
         }
     };
 
-
     const handleDeleteFile = async (id) => {
         setIsDeletingId(id);
         try {
             await axios.delete(`https://cloud-file-storage-backend.vercel.app/api/files/${id}`);
-            fetchFiles();
+            fetchFiles(); // Refresh file list after deletion
         } catch (error) {
             console.error('Error deleting file:', error);
         } finally {
@@ -116,6 +124,7 @@ const Files = () => {
                 handleDrop={handleDrop}
                 handleUpload={handleUpload}
                 loading={loading}
+                uploadProgress={uploadProgress} // Pass uploadProgress to UploadSection
             />
             <FileList
                 files={files}
@@ -124,8 +133,14 @@ const Files = () => {
                 downloadingFileId={downloadingFileId}
                 deletingFileId={isDeletingId}
             />
+            <Notification
+                type={notification.type}
+                message={notification.message}
+                onClose={() => setNotification({ type: '', message: '' })} // Close notification
+            />
         </section>
     );
+
 };
 
 export default Files;
