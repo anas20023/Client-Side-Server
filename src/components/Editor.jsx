@@ -8,8 +8,8 @@ const CodeEditor = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-4xl p-4 bg-white shadow-lg rounded-lg">
+        <div className="flex flex-col items-center justify-between min-h-screen bg-gray-100">
+            <div className="w-full max-w-6xl p-4 bg-white shadow-lg rounded-lg">
                 <h2 className="text-2xl font-semibold mb-4">C++ Code Editor</h2>
                 <MonacoEditor
                     height="500px"

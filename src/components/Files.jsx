@@ -55,7 +55,7 @@ const Files = () => {
 
         try {
             const response = await axios.post(
-                'https://cloud-file-storage-backend.onrender.com/api/upload',
+                'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload',
                 formData,
                 {
                     headers: {
