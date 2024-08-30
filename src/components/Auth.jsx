@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { FaFacebook, FaInstagram, FaGithub, FaBehance, FaGlobe } from 'react-icons/fa';
+import { FaEnvelope, FaInstagram, FaGithub, FaBehance, FaGlobe } from 'react-icons/fa';
 
 const Auth = ({ onLogin }) => {
-    const [username, setUsername] = useState('admin@anas');
+    const [username, setUsername] = useState('user@admin');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -13,7 +13,7 @@ const Auth = ({ onLogin }) => {
         e.preventDefault();
         setError('');
         setLoading(true);
-       // console.log(username, password);
+        // console.log(username, password);
         try {
             const response = await fetch('https://cloud-file-storage-backend.vercel.app/api/authenticate', {
                 method: 'POST',
@@ -52,8 +52,8 @@ const Auth = ({ onLogin }) => {
                         <input
                             type="text"
                             value={username}
-                            onChange={(e) => setUsername("admin@anas")}
-                            placeholder="admin@anas"
+                            onChange={(e) => setUsername("user@admin")}
+                            placeholder="user@admin"
                             className="w-full px-4 py-3 text-sm text-gray-400 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-600 transition duration-300 ease-in-out placeholder-gray-400"
                             disabled
                             required
@@ -99,23 +99,25 @@ const Auth = ({ onLogin }) => {
                     </button>
                 </form>
             </div>
-            <div className='flex flex-row justify-between items-center mt-8'>
+            <div className='flex flex-col justify-between items-center mt-8'>
+                <h2 className='py-5 text-white'>Need a Server Like this ?</h2>
                 <div className="flex flex-row space-x-6">
-                    <a href="https://www.facebook.com/anasib2000004/" target='_blank' className="text-gray-300 hover:text-gray-400">
+                    {/* <a href="https://www.facebook.com/anasib2000004/" target='_blank' className="text-gray-300 hover:text-gray-400">
                         <FaFacebook size={22} />
-                    </a>
-                    <a href="https://www.instagram.com/alpha000w/" target='_blank' className="text-gray-300 hover:text-gray-400">
+                    </a> */}
+                    {/* <a href="https://www.instagram.com/alpha000w/" target='_blank' className="text-gray-300 hover:text-gray-400">
                         <FaInstagram size={22} />
-                    </a>
+                    </a> */}
                     <a href="https://www.github.com/anas20023" target='_blank' className="text-gray-300 hover:text-gray-400">
                         <FaGithub size={22} />
+                    </a>
+                    <a href="https://anasib.tech/" target='_blank' className="text-gray-300 hover:text-gray-400">
+                        <FaEnvelope size={22} />
                     </a>
                     <a href="target='_blank'" target='_blank' className="text-gray-300 hover:text-gray-400">
                         <FaBehance size={22} />
                     </a>
-                    <a href="https://anasib.tech/" target='_blank' className="text-gray-300 hover:text-gray-400">
-                        <FaGlobe size={22} />
-                    </a>
+
                 </div>
             </div>
         </div>
