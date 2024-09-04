@@ -9,6 +9,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Auth from './components/Auth';
 import WeatherBoard from './components/Weather'
 import EditorUI from './components/Editor'
+import Notepad from './components/Nodepad';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,6 +65,7 @@ function App() {
                 <Route path="/files" element={<Files />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/editor" element={<EditorUI />} />
+                <Route path="/notepad" element={<Notepad />} />
                 <Route path="*" element={<Navigate to="/statistics" />} />
               </Routes>
             </main>

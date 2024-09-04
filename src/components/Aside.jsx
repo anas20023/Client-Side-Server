@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faGear, faFolderClosed, faChartArea, faSignOutAlt, faCloudMoonRain, faTerminal } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faGear, faFolderClosed, faChartArea, faSignOutAlt, faCloudMoonRain, faTerminal, faClipboard } from '@fortawesome/free-solid-svg-icons';
 
 const Aside = ({ onLogout }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -85,6 +85,16 @@ const Aside = ({ onLogout }) => {
                             >
                                 <FontAwesomeIcon icon={faTerminal} className="h-4 w-4 md:h-5 md:w-5 mr-3 text-white" />
                                 <span className="text-sm md:text-base">Code Space</span>
+                            </Link>
+                        </li>
+                        <li className="mb-3 flex items-center">
+                            <Link
+                                to="/notepad"
+                                className="flex items-center py-2 md:py-2.5 px-3 md:px-3.5 rounded hover:bg-gray-700 w-full transition-colors duration-200"
+                                onClick={() => setIsOpen(false)} // Close sidebar on link click for small screens
+                            >
+                                <FontAwesomeIcon icon={faClipboard} className="h-4 w-4 md:h-5 md:w-5 mr-3 text-white" />
+                                <span className="text-sm md:text-base">NotePad</span>
                             </Link>
                         </li>
                         <li className="mb-3 flex items-center">
