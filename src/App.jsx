@@ -58,7 +58,7 @@ function App() {
         {isAuthenticated ? (
           <>
             <Aside onLogout={handleLogout} />
-            <main className="flex-1 p-6">
+            <main className="flex-1">
               <Routes>
                 <Route path='/weather' element={<WeatherBoard />} />
                 <Route path="/statistics" element={<Statistics />} />

@@ -10,6 +10,7 @@ const Statistics = () => {
     const [fileFormats, setFileFormats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [noteno, setNotes] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,7 +21,12 @@ const Statistics = () => {
                 }
                 const statsResult = await statsResponse.json();
                 setData(statsResult);
-
+                const noteresponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/notes');
+                if (!noteresponse.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const notesResult = await noteresponse.json();
+                setNotes(notesResult);
                 const formatsResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/file-formats');
                 if (!formatsResponse.ok) {
                     throw new Error('Network response was not ok');
@@ -61,19 +67,28 @@ const Statistics = () => {
     if (error) return <p className="text-red-600 text-center mt-4">Error: {error}</p>;
 
     return (
-        <section id="statistics" className="p-6 sm:p-8 lg:p-12 bg-white text-gray-900 rounded-xl shadow-xl">
-            <h3 className="text-3xl sm:text-4xl font-semibold mb-8 text-center">Statistics</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
-                <div className="bg-gray-50 p-8 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-200 flex flex-col items-center">
-                    <h4 className="text-xl font-bold mb-4">Total Files</h4>
-                    <p className="text-5xl font-bold text-blue-700">{data.totalFiles}</p>
+        <section id="statistics" className="p-6 sm:p-8 lg:p-12 bg-gray-50 ">
+            <div className="text-3xl py-3 sm:text-4xl font-semibold my-3 text-center border-blue-600 border-y-[1px]">Statistics</div>
+
+            {/* Main Statistics Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-6 mb-12">
+                <div className="p-8 bg-blue-800 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 flex flex-col items-center">
+                    <h4 className="text-xl font-bold mb-4 text-white">Total Files</h4>
+                    <p className="text-4xl font-bold text-white">{data.totalFiles}</p>
                 </div>
-                <div className="bg-gray-50 p-8 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-200 flex flex-col items-center">
-                    <h4 className="text-xl font-bold mb-4">Storage Used</h4>
-                    <p className="text-5xl font-bold text-green-700">{data.storageUsed} GB</p>
+                <div className="p-8 bg-green-700 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 flex flex-col items-center">
+                    <h4 className="text-xl font-bold mb-4 text-white">Storage Used</h4>
+                    <p className="text-4xl font-bold text-white">{data.storageUsed} GB</p>
+                </div>
+                <div className="p-8 bg-red-700 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 flex flex-col items-center">
+                    <h4 className="text-xl font-bold mb-4 text-white">Total Notes</h4>
+                    <p className="text-4xl font-bold text-white">{noteno.length} Items</p>
                 </div>
             </div>
+
+            {/* Chart Section */}
             <div className="flex flex-col lg:flex-row lg:space-x-12 space-y-12 lg:space-y-0 mt-12">
+                {/* Pie Chart */}
                 <div className="w-full lg:w-1/2 p-4">
                     <h4 className="text-2xl font-bold mb-6 text-center lg:text-left">File Types in Storage</h4>
                     <PieChart width={320} height={320} className="mx-auto lg:mx-0">
@@ -91,9 +106,11 @@ const Statistics = () => {
                         <Tooltip />
                     </PieChart>
                 </div>
+
+                {/* Legend */}
                 <div className="w-full lg:w-1/2 p-4">
                     <h4 className="text-2xl font-bold mb-6 text-center lg:text-left">Legend</h4>
-                    <ul className="list-disc pl-6">
+                    <ul className="list-none pl-0 lg:pl-6">
                         {pieData.map((entry, index) => (
                             <li key={`legend-${index}`} className="flex items-center mb-4">
                                 <div
