@@ -1,7 +1,6 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { FaEnvelope, FaInstagram, FaGithub, FaBehance, FaGlobe } from 'react-icons/fa';
+import { FaEnvelope, FaGithub, FaBehance } from 'react-icons/fa';
 
 const Auth = ({ onLogin }) => {
     const [username, setUsername] = useState('user@admin');
@@ -13,7 +12,6 @@ const Auth = ({ onLogin }) => {
         e.preventDefault();
         setError('');
         setLoading(true);
-        // console.log(username, password);
         try {
             const response = await fetch('https://cloud-file-storage-backend.vercel.app/api/authenticate', {
                 method: 'POST',
@@ -44,52 +42,78 @@ const Auth = ({ onLogin }) => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-4">
-            <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-105 w-full max-w-xs sm:max-w-sm md:max-w-md animate-fadeIn">
+        <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-4 bg-fixed bg-cover bg-center">
+            <div className="bg-gray-800 bg-opacity-80 backdrop-blur-md px-8 py-14 rounded-lg shadow-2xl w-full max-w-xs sm:max-w-sm md:max-w-md">
                 <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-100">Welcome Back</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="relative">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    <div className="relative z-0 w-full group">
                         <input
                             type="text"
+                            name="floating_username"
+                            id="floating_username"
                             value={username}
-                            onChange={(e) => setUsername("user@admin")}
-                            placeholder="user@admin"
-                            className="w-full px-4 py-3 text-sm text-gray-400 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-600 transition duration-300 ease-in-out placeholder-gray-400"
-                            disabled
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="block py-3 px-2 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer placeholder-gray-400"
+                            placeholder=" "
+                            readOnly  // Fix: use readOnly instead of disabled
                             required
                         />
-                        <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zM12 14a4 4 0 100-8 4 4 0 000 8zm4 2H8a2 2 0 00-2 2v1a2 2 0 002 2h8a2 2 0 002-2v-1a2 2 0 00-2-2z" />
-                            </svg>
-                        </div>
+                        <label
+                            htmlFor="floating_username"
+                            className="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                           
+                        </label>
                     </div>
-                    <div className="relative">
+
+                    <div className="relative z-0 w-full group">
                         <input
                             type="password"
+                            name="floating_password"
+                            id="floating_password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            className="w-full px-4 py-3 text-sm text-gray-200 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-600 transition duration-300 ease-in-out placeholder-gray-400"
+                            className="block py-3 px-4 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer placeholder-gray-400"
+                            placeholder=" "
                             required
                         />
-                        <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11V5m0 6v6m6 0H6" />
-                            </svg>
-                        </div>
+                        <label
+                            htmlFor="floating_password"
+                            className="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >
+                            Password
+                        </label>
                     </div>
+
                     {error && <p className="text-red-500 text-center animate-pulse">{error}</p>}
+
                     <button
                         type="submit"
-                        className={`w-full py-3 rounded-lg text-sm font-semibold text-white transition duration-300 ease-in-out ${loading ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'} shadow-lg hover:shadow-xl transform hover:-translate-y-1`}
+                        className={`w-full py-3 rounded-lg text-sm font-semibold text-white transition duration-300 ease-in-out ${loading ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'
+                            } shadow-lg hover:shadow-xl transform hover:-translate-y-1`}
                         disabled={loading}
                     >
                         {loading ? (
                             <span className="flex items-center justify-center">
-                                <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8l4 4-4 4V12H4z"></path>
+                                <svg
+                                    className="animate-spin h-5 w-5 mr-2"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v8l4 4-4 4V12H4z"
+                                    ></path>
                                 </svg>
                                 Logging in...
                             </span>
@@ -99,29 +123,22 @@ const Auth = ({ onLogin }) => {
                     </button>
                 </form>
             </div>
+
             <div className='flex flex-col justify-between items-center mt-8'>
-                <h2 className='py-5 text-white'>Need a Server Like this ?</h2>
+                <h2 className='py-5 text-white'>Need a Server Like this?</h2>
                 <div className="flex flex-row space-x-6">
-                    {/* <a href="https://www.facebook.com/anasib2000004/" target='_blank' className="text-gray-300 hover:text-gray-400">
-                        <FaFacebook size={22} />
-                    </a> */}
-                    {/* <a href="https://www.instagram.com/alpha000w/" target='_blank' className="text-gray-300 hover:text-gray-400">
-                        <FaInstagram size={22} />
-                    </a> */}
-                    <a href="https://www.github.com/anas20023" target='_blank' className="text-gray-300 hover:text-gray-400">
+                    <a href="https://www.github.com/anas20023" target='_blank' rel="noopener noreferrer" className="text-gray-300 hover:text-gray-400">
                         <FaGithub size={22} />
                     </a>
-                    <a href="https://anasib.tech/" target='_blank' className="text-gray-300 hover:text-gray-400">
+                    <a href="https://anasib.tech/" target='_blank' rel="noopener noreferrer" className="text-gray-300 hover:text-gray-400">
                         <FaEnvelope size={22} />
                     </a>
-                    <a href="target='_blank'" target='_blank' className="text-gray-300 hover:text-gray-400">
+                    <a href="https://www.behance.net" target='_blank' rel="noopener noreferrer" className="text-gray-300 hover:text-gray-400">
                         <FaBehance size={22} />
                     </a>
-
                 </div>
             </div>
         </div>
-
     );
 };
 
