@@ -96,7 +96,7 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
             </div>
             <div className="w-full sm:w-1/4 flex justify-end space-x-2">
                 <button onClick={copyLinkToClipboard} title="Copy link">
-                    <AiOutlineLink className="mr-2 text-blue-700" />
+                    <AiOutlineLink className="mr-2 bg-blue-700 text-white p-2.5 rounded" />
                 </button>
                 <button
                     onClick={() => onDownload(file.fileURL, file.id)}
