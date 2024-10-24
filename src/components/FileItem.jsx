@@ -12,12 +12,10 @@ import {
     FaArchive,
     FaFileAlt,
     FaFileCode,
-    FaFileCsv,
-    FaFileUpload,
-    FaEdit, // Use FaEdit as an alternative if FaFileEdit is unavailable
     FaFileDownload,
     FaTrashAlt
 } from 'react-icons/fa'; // FontAwesome icons
+import { AiOutlineLink } from 'react-icons/ai';
 
 // Mapping of file extensions to FontAwesome icons and colors
 const fileIconMap = {
@@ -76,6 +74,17 @@ const getFileIcon = (fileName) => {
 const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => {
     const { icon: Icon, color } = getFileIcon(file.fileName);
 
+    // Function to copy link to clipboard
+    const copyLinkToClipboard = () => {
+        navigator.clipboard.writeText(file.fileURL)
+            .then(() => {
+                alert('Link copied to clipboard!'); // Optional: Notify user
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+    };
+
     return (
         <li className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm mb-4">
             <div className="w-full sm:w-2/3 flex items-center mb-4 sm:mb-0">
@@ -85,7 +94,10 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
                     <span className="text-gray-500 text-xs sm:text-sm">{file.uploadDate}</span>
                 </div>
             </div>
-            <div className="w-full sm:w-1/3 flex justify-end space-x-2">
+            <div className="w-full sm:w-1/4 flex justify-end space-x-2">
+                <button onClick={copyLinkToClipboard} title="Copy link">
+                    <AiOutlineLink className="mr-2 text-blue-700" />
+                </button>
                 <button
                     onClick={() => onDownload(file.fileURL, file.id)}
                     className={`bg-green-500 text-white px-3 py-2 rounded flex items-center justify-center ${isDownloading ? 'bg-green-400' : ''}`}
