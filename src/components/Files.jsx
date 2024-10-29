@@ -22,7 +22,7 @@ const Files = () => {
 
     const fetchFiles = async () => {
         try {
-            const response = await axios.get('https://cloud-file-storage-backend.vercel.app/api/files');
+            const response = await axios.get('https://cloud-file-storage-backend-2pr4.onrender.com/api/files');
             setFiles(response.data);
         } catch (error) {
             console.error('Error fetching files:', error);
@@ -107,7 +107,7 @@ const Files = () => {
     const handleDeleteFile = async (id) => {
         setIsDeletingId(id);
         try {
-            await axios.delete(`https://cloud-file-storage-backend.vercel.app/api/files/${id}`);
+            await axios.delete(`https://cloud-file-storage-backend-2pr4.onrender.com/api/files/${id}`);
             fetchFiles(); // Refresh file list after deletion
         } catch (error) {
             console.error('Error deleting file:', error);
