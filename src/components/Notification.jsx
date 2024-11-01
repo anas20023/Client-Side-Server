@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 const AlertBox = ({ type, message, onClose }) => {
-    // Define the SVG icons based on type
     const errIcon = (
         <svg
             className="h-6 w-6 shrink-0 text-red-600"
@@ -37,7 +36,6 @@ const AlertBox = ({ type, message, onClose }) => {
 
     if (!message) return null;
 
-    // Define alert color styles based on type
     const alertStyles = {
         success: {
             bgColor: 'bg-green-100',
@@ -54,8 +52,10 @@ const AlertBox = ({ type, message, onClose }) => {
     const { bgColor, textColor, borderColor } = alertStyles[type] || alertStyles.error;
 
     return (
-        <div className={`flex items-center p-4 mb-4 text-sm rounded-lg border ${bgColor} ${borderColor} ${textColor}`} role="alert">
-            {/* Display icon based on type */}
+        <div
+            className={`fixed top-4 right-4 max-w-sm flex items-center p-4 text-sm rounded-lg border shadow-lg ${bgColor} ${borderColor} ${textColor}`}
+            role="alert"
+        >
             <div className="mr-3">
                 {type === 'success' ? successIcon : errIcon}
             </div>
