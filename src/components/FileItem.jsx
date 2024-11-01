@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import Notification from './Notification';
+import  { useState } from 'react';
 import React from 'react';
 import {
     FaFilePdf,
@@ -73,12 +75,12 @@ const getFileIcon = (fileName) => {
 
 const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => {
     const { icon: Icon, color } = getFileIcon(file.fileName);
-
+    const [notification, setNotification] = useState({ type: '', message: '' });
     // Function to copy link to clipboard
     const copyLinkToClipboard = () => {
         navigator.clipboard.writeText(file.fileURL)
             .then(() => {
-                alert('Link copied to clipboard!'); // Optional: Notify user
+                setNotification({ type: 'success', message: 'Link copied to clipboard!' });
             })
             .catch(err => {
                 console.error('Failed to copy: ', err);
