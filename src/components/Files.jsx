@@ -111,8 +111,10 @@ const Files = () => {
             fetchFiles(); // Refresh file list after deletion
         } catch (error) {
             console.error('Error deleting file:', error);
+            setNotification({ type: 'error', message: 'Failed to delete file. Please try again.' }); // Error message
         } finally {
             setIsDeletingId(null);
+            setNotification({ type: 'success', message: 'File deleted successfully!' }); // Success message
         }
     };
 
