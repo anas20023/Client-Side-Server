@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import Notification from './Notification';
-import  { useState } from 'react';
+import { useState } from 'react';
 import React from 'react';
 import {
     FaFilePdf,
@@ -18,8 +17,8 @@ import {
     FaTrashAlt
 } from 'react-icons/fa'; // FontAwesome icons
 import { AiOutlineLink } from 'react-icons/ai';
+import Notification from './Notification';
 
-// Mapping of file extensions to FontAwesome icons and colors
 const fileIconMap = {
     'pdf': { icon: FaFilePdf, color: 'text-red-600' },
     'xlsx': { icon: FaFileExcel, color: 'text-green-600' },
@@ -64,10 +63,8 @@ const fileIconMap = {
     'swift': { icon: FaFileCode, color: 'text-orange-500' }
 };
 
-// Default icon and color for unknown file formats
 const defaultIcon = { icon: FaFileAlt, color: 'text-gray-500' };
 
-// Function to get icon and color based on file extension
 const getFileIcon = (fileName) => {
     const ext = (fileName.split('.').pop() || '').toLowerCase();
     return fileIconMap[ext] || defaultIcon;
@@ -76,19 +73,30 @@ const getFileIcon = (fileName) => {
 const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => {
     const { icon: Icon, color } = getFileIcon(file.fileName);
     const [notification, setNotification] = useState({ type: '', message: '' });
+
     // Function to copy link to clipboard
     const copyLinkToClipboard = () => {
         navigator.clipboard.writeText(file.fileURL)
             .then(() => {
                 setNotification({ type: 'success', message: 'Link copied to clipboard!' });
+                setTimeout(() => setNotification({ type: '', message: '' }), 3000); // Clear notification after 3 seconds
             })
             .catch(err => {
                 console.error('Failed to copy: ', err);
+                setNotification({ type: 'error', message: 'Failed to copy link.' });
             });
     };
 
     return (
         <li className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm mb-4">
+            {/* Notification alert at the top-right corner */}
+            {notification.message && (
+                <Notification
+                    type={notification.type}
+                    message={notification.message}
+                    onClose={() => setNotification({ type: '', message: '' })}
+                />
+            )}
             <div className="w-full sm:w-2/3 flex items-center mb-4 sm:mb-0">
                 <Icon className={`h-6 w-6 ${color} mr-3`} />
                 <div className="flex flex-col">
@@ -97,7 +105,11 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
                 </div>
             </div>
             <div className="w-full sm:w-1/4 flex justify-end space-x-2">
-                <button onClick={copyLinkToClipboard} title="Copy link" className='bg-blue-700 text-white px-3 py-2 rounded flex items-center justify-center'>
+                <button
+                    onClick={copyLinkToClipboard}
+                    title="Copy link"
+                    className="bg-blue-700 text-white px-3 py-2 rounded flex items-center justify-center"
+                >
                     <AiOutlineLink />
                 </button>
                 <button
