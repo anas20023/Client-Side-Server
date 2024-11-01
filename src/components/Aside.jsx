@@ -55,7 +55,7 @@ const Aside = ({ onLogout }) => {
 
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out w-72 bg-gray-800 text-gray-100 p-6 `}
+                className={`fixed inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out w-72 bg-gray-800 text-gray-100 p-6 `}
                 aria-hidden={!isOpen}
             >
                 <h2 className="text-2xl font-semibold mb-8 text-center text-blue-400">Dashboard</h2>
