@@ -123,6 +123,15 @@ const Files = () => {
         <section id="files" className="p-6 bg-gray-100 min-h-screen">
             <h3 className="text-3xl font-extrabold text-center mb-8 text-gray-800">Manage Files</h3>
 
+
+            <UploadSection
+                fileNames={fileNames}
+                handleDrop={handleDrop}
+                handleUpload={handleUpload}
+                loading={loading}
+                uploadProgress={uploadProgress}
+            />
+
             <div className="flex justify-between items-center mb-6">
                 <input
                     type="text"
@@ -141,14 +150,6 @@ const Files = () => {
                     <option value="desc">Sort by Date (Newest)</option>
                 </select>
             </div>
-
-            <UploadSection
-                fileNames={fileNames}
-                handleDrop={handleDrop}
-                handleUpload={handleUpload}
-                loading={loading}
-                uploadProgress={uploadProgress}
-            />
 
             <FileList
                 files={filteredAndSortedFiles}
