@@ -25,6 +25,7 @@ const Files = () => {
         try {
             const response = await axios.get('https://cloud-file-storage-backend.vercel.app/api/files');
             setFiles(response.data);
+            console.log('Fetched files:', response.data); // Debugging line to check data
         } catch (error) {
             console.error('Error fetching files:', error);
         }
@@ -76,7 +77,7 @@ const Files = () => {
             setNotification({ type: 'success', message: 'Files uploaded successfully!' });
             setFileContents([]);
             setFileNames([]);
-            fetchFiles();
+            await fetchFiles();  // Refresh file list after upload
         } catch (error) {
             setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' });
         } finally {
@@ -105,13 +106,13 @@ const Files = () => {
         setIsDeletingId(id);
         try {
             await axios.delete(`https://cloud-file-storage-backend-2pr4.onrender.com/api/files/${id}`);
-            fetchFiles();
+            await fetchFiles();  // Refresh file list after deletion
+            setNotification({ type: 'success', message: 'File deleted successfully!' });
         } catch (error) {
             console.error('Error deleting file:', error);
             setNotification({ type: 'error', message: 'Failed to delete file. Please try again.' });
         } finally {
             setIsDeletingId(null);
-            setNotification({ type: 'success', message: 'File deleted successfully!' });
         }
     };
 
@@ -119,10 +120,11 @@ const Files = () => {
         .filter(file => file.name && file.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .sort((a, b) => sortOrder === 'asc' ? new Date(a.uploadDate) - new Date(b.uploadDate) : new Date(b.uploadDate) - new Date(a.uploadDate));
 
+    console.log('Filtered and sorted files:', filteredAndSortedFiles); // Debugging line to confirm filtering and sorting
+
     return (
         <section id="files" className="p-6 bg-gray-100 min-h-screen">
             <h3 className="text-3xl font-extrabold text-center mb-8 text-gray-800">Manage Files</h3>
-
 
             <UploadSection
                 fileNames={fileNames}
