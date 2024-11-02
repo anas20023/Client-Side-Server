@@ -116,7 +116,7 @@ const Files = () => {
     };
 
     const filteredAndSortedFiles = files
-        .filter(file => file.name && file.name.toLowerCase().includes(searchTerm.toLowerCase())) // Ensure file.name exists
+        .filter(file => file.name && file.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .sort((a, b) => sortOrder === 'asc' ? new Date(a.uploadDate) - new Date(b.uploadDate) : new Date(b.uploadDate) - new Date(a.uploadDate));
 
     return (
