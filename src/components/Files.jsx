@@ -15,7 +15,7 @@ const Files = () => {
     const [downloadingFileId, setDownloadingFileId] = useState(null);
     const [notification, setNotification] = useState({ type: '', message: '' });
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc'); // State for sort order
+    const [sortOrder, setSortOrder] = useState('asc'); 
 
     useEffect(() => {
         fetchFiles();
@@ -23,7 +23,7 @@ const Files = () => {
 
     const fetchFiles = async () => {
         try {
-            const response = await axios.get('https://cloud-file-storage-backend-2pr4.onrender.com/api/files');
+            const response = await axios.get('https://cloud-file-storage-backend.vercel.app/api/files');
             setFiles(response.data);
         } catch (error) {
             console.error('Error fetching files:', error);
@@ -115,7 +115,6 @@ const Files = () => {
         }
     };
 
-    // Filter and sort files based on search and sort order
     const filteredAndSortedFiles = files
         .filter(file => file.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .sort((a, b) => sortOrder === 'asc' ? new Date(a.uploadDate) - new Date(b.uploadDate) : new Date(b.uploadDate) - new Date(a.uploadDate));
