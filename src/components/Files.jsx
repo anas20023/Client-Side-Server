@@ -61,7 +61,7 @@ const Files = () => {
         formData.append('fileNames', JSON.stringify(fileNames));
 
         try {
-            console.log("file size",s);
+            console.log("file size is ",s);
             await axios.post(
                 'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload',
                 formData,
