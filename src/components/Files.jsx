@@ -14,12 +14,12 @@ const Files = () => {
     const [isDeletingId, setIsDeletingId] = useState(null);
     const [downloadingFileId, setDownloadingFileId] = useState(null);
     const [notification, setNotification] = useState({ type: '', message: '' });
-    const [s,setS]=useState(0);
+    const [s, setS] = useState(0);
 
 
     useEffect(() => {
         fetchFiles();
-    }, []); 
+    }, []);
 
     const fetchFiles = async () => {
         try {
@@ -46,7 +46,7 @@ const Files = () => {
 
     const handleUpload = async () => {
         if (fileContents.length === 0 || fileNames.length === 0) {
-           // alert('Please select files to upload.');
+            // alert('Please select files to upload.');
             setNotification({ type: 'error', message: 'Please select files to upload.' }); // Error message
             return;
         }
@@ -61,31 +61,56 @@ const Files = () => {
         formData.append('fileNames', JSON.stringify(fileNames));
 
         try {
-            console.log("file size is ",s);
-            await axios.post(
-                'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload',
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    onUploadProgress: (progressEvent) => {
-                        // Check if total is not zero to avoid division by zero
-                        if (progressEvent.total > 0) {
-                            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                            setUploadProgress(percentCompleted); // Update progress percentage
+            // console.log("file size is ",s); if file size is smalller then 10 MB then it will be uploaded with vercel backend
+            if (s < 10000000) {
+                await axios.post(
+                    'https://cloud-file-storage-backend.vercel.app/api/upload',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        onUploadProgress: (progressEvent) => {
+                            // Check if total is not zero to avoid division by zero
+                            if (progressEvent.total > 0) {
+                                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                setUploadProgress(percentCompleted); // Update progress percentage
+                            }
                         }
                     }
-                }
-            );
-
-            setNotification({ type: 'success', message: 'Files uploaded successfully!' }); // Success message
+                );
+            }
+            else {
+                await axios.post(
+                    'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                        onUploadProgress: (progressEvent) => {
+                            // Check if total is not zero to avoid division by zero
+                            if (progressEvent.total > 0) {
+                                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                                setUploadProgress(percentCompleted); // Update progress percentage
+                            }
+                        }
+                    }
+                );
+            }
+            // Notification will show for 2 seconds
+            setNotification({ message: 'File uploaded successfully', type: 'success' });
+            setTimeout(() => {
+                setNotification({ message: '', type: '' });
+            }, 2000);
             setFileContents([]);
             setFileNames([]);
             fetchFiles(); // Refresh file list after upload
         } catch (error) {
-           // console.error('Error during file upload:', error);
-            setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' }); // Error message
+            // console.error('Error during file upload:', error);
+            setTimeout(() => {
+                setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' }); // Error message
+            }, 2000);
         } finally {
             setLoading(false);
             setUploadProgress(0); // Reset progress after upload
@@ -114,11 +139,17 @@ const Files = () => {
             await axios.delete(`https://cloud-file-storage-backend.vercel.app/api/files/${id}`);
             fetchFiles(); // Refresh file list after deletion
         } catch (error) {
-            console.error('Error deleting file:', error);
-            setNotification({ type: 'error', message: 'Failed to delete file. Please try again.' }); // Error message
+            //console.error('Error deleting file:', error);
+            setNotification({ type: 'error', message: 'Failed to delete file. Please try again.' });
+            setTimeout(() => {
+                setNotification({ type: '', message: '' });
+            }, 2000);
         } finally {
             setIsDeletingId(null);
-            setNotification({ type: 'success', message: 'File deleted successfully!' }); // Success message
+            setNotification({ type: 'success', message: 'File deleted successfully!' });
+            setTimeout(() => {
+                setNotification({ type: '', message: '' });
+            }, 2000);
         }
     };
 
