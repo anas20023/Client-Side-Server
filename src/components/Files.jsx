@@ -18,7 +18,7 @@ const Files = () => {
 
     useEffect(() => {
         fetchFiles();
-    }, []);
+    }, []); 
 
     const fetchFiles = async () => {
         try {
