@@ -14,6 +14,7 @@ const Files = () => {
     const [isDeletingId, setIsDeletingId] = useState(null);
     const [downloadingFileId, setDownloadingFileId] = useState(null);
     const [notification, setNotification] = useState({ type: '', message: '' });
+    const [s,setS]=useState(0);
 
 
     useEffect(() => {
@@ -33,11 +34,12 @@ const Files = () => {
 
     const handleDrop = (acceptedFiles) => {
         const filteredFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
-
+        // set the size of the file to the state setS for all file size
+        setS(acceptedFiles[0].size);
         if (filteredFiles.length !== acceptedFiles.length) {
-            alert("Some files exceed the size limit and won't be uploaded.");
+            //alert("Some files exceed the size limit and won't be uploaded.");
+            setNotification({ type: 'error', message: "Some files exceed the size limit and won't be uploaded." }); // Error message
         }
-
         setFileContents(filteredFiles);
         setFileNames(filteredFiles.map(file => file.name));
     };
@@ -59,6 +61,7 @@ const Files = () => {
         formData.append('fileNames', JSON.stringify(fileNames));
 
         try {
+            console.log("file size",s);
             await axios.post(
                 'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload',
                 formData,
