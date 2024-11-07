@@ -22,7 +22,7 @@ const Files = () => {
 
     const fetchFiles = async () => {
         try {
-            const response = await axios.get('https://cloud-file-storage-backend-2pr4.onrender.com/api/files');
+            const response = await axios.get('https://cloud-file-storage-backend.vercel.app/api/files');
             setFiles(response.data);
         } catch (error) {
             console.error('Error fetching files:', error);
