@@ -44,7 +44,8 @@ const Files = () => {
 
     const handleUpload = async () => {
         if (fileContents.length === 0 || fileNames.length === 0) {
-            alert('Please select files to upload.');
+           // alert('Please select files to upload.');
+            setNotification({ type: 'error', message: 'Please select files to upload.' }); // Error message
             return;
         }
 
