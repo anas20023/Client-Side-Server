@@ -5,6 +5,7 @@ import FileItem from './FileItem';
 
 const FileList = ({ files, onDownload, onDelete, downloadingFileId, deletingFileId }) => {
     return (
+        //console.log(files),
         <ul className="w-full">
             {files.map((file) => (
                 <FileItem
