@@ -16,8 +16,13 @@ const Notepad = () => {
 
   // Fetch notes from the backend
   const fetchNotes = async () => {
-    const response = await axios.get('https://cloud-file-storage-backend.vercel.app/api/notes');
-    setNotes(response.data);
+    try {
+      const response = await axios.get('https://cloud-file-storage-backend.vercel.app/api/notes');
+      setNotes(response.data || []); // Set empty array as fallback
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      setNotes([]); // Set to empty array if there is an error
+    }
   };
 
   useEffect(() => {
@@ -38,23 +43,28 @@ const Notepad = () => {
     }
 
     setLoading(true);
-    if (isEditing) {
-      await axios.put(`https://cloud-file-storage-backend.vercel.app/api/notes/${editId}`, {
-        title: currentTitle,
-        text: currentNote,
-      });
-      setIsEditing(false);
-      setEditId(null);
-    } else {
-      await axios.post('https://cloud-file-storage-backend.vercel.app/api/notes', {
-        title: currentTitle,
-        text: currentNote,
-      });
+    try {
+      if (isEditing) {
+        await axios.put(`https://cloud-file-storage-backend.vercel.app/api/notes/${editId}`, {
+          title: currentTitle,
+          text: currentNote,
+        });
+        setIsEditing(false);
+        setEditId(null);
+      } else {
+        await axios.post('https://cloud-file-storage-backend.vercel.app/api/notes', {
+          title: currentTitle,
+          text: currentNote,
+        });
+      }
+      setCurrentTitle('');
+      setCurrentNote('');
+      fetchNotes(); // Fetch the latest notes after save
+    } catch (error) {
+      console.error('Error saving note:', error);
+    } finally {
+      setLoading(false);
     }
-    setCurrentTitle('');
-    setCurrentNote('');
-    setLoading(false);
-    fetchNotes(); // Fetch the latest notes after save
   };
 
   // Edit a note
@@ -74,19 +84,25 @@ const Notepad = () => {
   // Confirm deletion of a note
   const deleteNote = async () => {
     setDeleting(true); // Set deleting to true when starting deletion
-    await axios.delete(`https://cloud-file-storage-backend.vercel.app/api/notes/${noteToDelete._id}`);
-    setShowModal(false);
-    setNoteToDelete(null);
-    setDeleting(false); // Reset deleting state
-    fetchNotes(); // Fetch the latest notes after delete
+    try {
+      await axios.delete(`https://cloud-file-storage-backend.vercel.app/api/notes/${noteToDelete._id}`);
+      setShowModal(false);
+      setNoteToDelete(null);
+      fetchNotes(); // Fetch the latest notes after delete
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    } finally {
+      setDeleting(false); // Reset deleting state
+    }
   };
 
   // Helper function to truncate note text
   const truncateText = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
-    }
-    return text;
+    if (text) {
+      if (text.length > maxLength) {
+        return text.substring(0, maxLength) + '...';
+      }
+    } return text;
   };
 
   return (
@@ -111,9 +127,8 @@ const Notepad = () => {
 
         <button
           onClick={saveNote}
-          className={`mt-4 w-full py-3 rounded-lg text-lg font-semibold text-white ${
-            isEditing ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-500 hover:bg-blue-600'
-          } transition duration-200`}
+          className={`mt-4 w-full py-3 rounded-lg text-lg font-semibold text-white ${isEditing ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-500 hover:bg-blue-600'
+            } transition duration-200`}
           disabled={loading}
         >
           {loading ? (
