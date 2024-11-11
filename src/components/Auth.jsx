@@ -42,9 +42,9 @@ const Auth = ({ onLogin }) => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-4 bg-fixed bg-cover bg-center">
-            <div className="bg-gray-800 bg-opacity-80 backdrop-blur-md px-8 py-14 rounded-lg shadow-2xl w-full max-w-xs sm:max-w-sm md:max-w-md">
-                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-100">Welcome Back</h2>
+        <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50 p-4">
+            <div className="bg-white bg-opacity-90 px-8 py-14 rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md">
+                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-gray-700">Welcome Back</h2>
                 <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="relative z-0 w-full group">
                         <input
@@ -53,7 +53,7 @@ const Auth = ({ onLogin }) => {
                             id="floating_username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="block py-3 px-2 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer placeholder-gray-400"
+                            className="block py-3 px-2 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 peer placeholder-gray-400"
                             placeholder=" "
                             readOnly  // Fix: use readOnly instead of disabled
                             required
@@ -62,7 +62,7 @@ const Auth = ({ onLogin }) => {
                             htmlFor="floating_username"
                             className="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >
-                           
+                            Username
                         </label>
                     </div>
 
@@ -73,7 +73,7 @@ const Auth = ({ onLogin }) => {
                             id="floating_password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="block py-3 px-4 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer placeholder-gray-400"
+                            className="block py-3 px-4 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 peer placeholder-gray-400"
                             placeholder=" "
                             required
                         />
@@ -85,12 +85,12 @@ const Auth = ({ onLogin }) => {
                         </label>
                     </div>
 
-                    {error && <p className="text-red-500 text-center animate-pulse">{error}</p>}
+                    {error && <p className="text-red-500 text-center">{error}</p>}
 
                     <button
                         type="submit"
-                        className={`w-full py-3 rounded-lg text-sm font-semibold text-white transition duration-300 ease-in-out ${loading ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'
-                            } shadow-lg hover:shadow-xl transform hover:-translate-y-1`}
+                        className={`w-full py-3 rounded-lg text-sm font-semibold text-white transition duration-300 ease-in-out ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
+                            } shadow-lg`}
                         disabled={loading}
                     >
                         {loading ? (
@@ -125,15 +125,15 @@ const Auth = ({ onLogin }) => {
             </div>
 
             <div className='flex flex-col justify-between items-center mt-8'>
-                <h2 className='py-5 text-white'>Need a Server Like this?</h2>
+                <h2 className='py-5 text-gray-700'>Need a Server Like this?</h2>
                 <div className="flex flex-row space-x-6">
-                    <a href="https://www.github.com/anas20023" target='_blank' rel="noopener noreferrer" className="text-gray-300 hover:text-gray-400">
+                    <a href="https://www.github.com/anas20023" target='_blank' rel="noopener noreferrer" className="text-gray-600 hover:text-gray-700">
                         <FaGithub size={22} />
                     </a>
-                    <a href="https://anasib.tech/" target='_blank' rel="noopener noreferrer" className="text-gray-300 hover:text-gray-400">
+                    <a href="https://anasib.tech/" target='_blank' rel="noopener noreferrer" className="text-gray-600 hover:text-gray-700">
                         <FaEnvelope size={22} />
                     </a>
-                    <a href="https://www.behance.net" target='_blank' rel="noopener noreferrer" className="text-gray-300 hover:text-gray-400">
+                    <a href="https://www.behance.net" target='_blank' rel="noopener noreferrer" className="text-gray-600 hover:text-gray-700">
                         <FaBehance size={22} />
                     </a>
                 </div>
