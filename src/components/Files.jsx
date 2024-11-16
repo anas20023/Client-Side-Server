@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import UploadSection from './UploadSection';
 import FileList from './FileList';
@@ -10,7 +10,7 @@ const Files = () => {
     const [fileContents, setFileContents] = useState([]);
     const [fileNames, setFileNames] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0); // State for upload progress
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [isDeletingId, setIsDeletingId] = useState(null);
     const [downloadingFileId, setDownloadingFileId] = useState(null);
     const [notification, setNotification] = useState({ type: '', message: '' });
@@ -18,13 +18,7 @@ const Files = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
 
-    const handleSort = (e) => {
-        setSortOrder(e.target.value);
-    };
-
-    const handleSearch = (e) => {
-        setSearchQuery(e.target.value);
-    };
+    const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
 
     useEffect(() => {
         fetchFiles();
@@ -39,11 +33,9 @@ const Files = () => {
         }
     };
 
-    const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
-
     const handleDrop = (acceptedFiles) => {
         const filteredFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
-        setS(acceptedFiles[0].size);
+        setS(acceptedFiles[0]?.size || 0);
         if (filteredFiles.length !== acceptedFiles.length) {
             setNotification({ type: 'error', message: "Some files exceed the size limit and won't be uploaded." });
         }
@@ -67,50 +59,26 @@ const Files = () => {
         formData.append('fileNames', JSON.stringify(fileNames));
 
         try {
-            if (s < 10000000) {
-                await axios.post(
-                    'https://cloud-file-storage-backend.vercel.app/api/upload',
-                    formData,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                        onUploadProgress: (progressEvent) => {
-                            if (progressEvent.total > 0) {
-                                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                                setUploadProgress(percentCompleted);
-                            }
-                        }
+            const url = s < 10000000
+                ? 'https://cloud-file-storage-backend.vercel.app/api/upload'
+                : 'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload';
+
+            await axios.post(url, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.total > 0) {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        setUploadProgress(percentCompleted);
                     }
-                );
-            } else {
-                await axios.post(
-                    'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload',
-                    formData,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                        onUploadProgress: (progressEvent) => {
-                            if (progressEvent.total > 0) {
-                                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                                setUploadProgress(percentCompleted);
-                            }
-                        }
-                    }
-                );
-            }
+                }
+            });
+
             setNotification({ message: 'File uploaded successfully', type: 'success' });
-            setTimeout(() => {
-                setNotification({ message: '', type: '' });
-            }, 2000);
             setFileContents([]);
             setFileNames([]);
             fetchFiles();
         } catch (error) {
-            setTimeout(() => {
-                setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' });
-            }, 2000);
+            setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' });
         } finally {
             setLoading(false);
             setUploadProgress(0);
@@ -140,33 +108,24 @@ const Files = () => {
             fetchFiles();
         } catch (error) {
             setNotification({ type: 'error', message: 'Failed to delete file. Please try again.' });
-            setTimeout(() => {
-                setNotification({ type: '', message: '' });
-            }, 2000);
         } finally {
             setIsDeletingId(null);
             setNotification({ type: 'success', message: 'File deleted successfully!' });
-            setTimeout(() => {
-                setNotification({ type: '', message: '' });
-            }, 2000);
         }
     };
 
-    const filteredAndSortedFiles = files
-        .filter((file) => {
-            // Only filter if there's a search query, otherwise return all files
-            return !searchQuery || (file.name && file.name.toLowerCase().includes(searchQuery.toLowerCase()));
-        })
-        .sort((a, b) => {
-            const nameA = a.name || ""; // Default to empty string if name is undefined
-            const nameB = b.name || ""; // Default to empty string if name is undefined
-            if (sortOrder === 'asc') {
-                return nameA.localeCompare(nameB);
-            } else {
-                return nameB.localeCompare(nameA);
-            }
+    const filteredAndSortedFiles = useMemo(() => {
+        const query = searchQuery.trim().toLowerCase();
+        const filteredFiles = files.filter((file) => {
+            return !query || (file.name && file.name.toLowerCase().includes(query));
         });
 
+        return filteredFiles.sort((a, b) => {
+            const nameA = (a.name || '').toLowerCase();
+            const nameB = (b.name || '').toLowerCase();
+            return sortOrder === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+        });
+    }, [files, searchQuery, sortOrder]);
 
     return (
         <section id="files" className="p-6 bg-gray-100 min-h-screen">
@@ -178,7 +137,6 @@ const Files = () => {
                 loading={loading}
                 uploadProgress={uploadProgress}
             />
-            {/* Search Input Box and Sort Dropdown */}
             <div className="flex flex-row justify-between items-center my-8 gap-1 lg:gap-2">
                 <input
                     type="search"
@@ -186,18 +144,21 @@ const Files = () => {
                 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
                     placeholder="Search files..."
                     value={searchQuery}
-                    onChange={handleSearch}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <select
                     className="w-1/4 p-2 text-sm text-gray-700 placeholder-gray
                 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
                     value={sortOrder}
-                    onChange={handleSort}
+                    onChange={(e) => setSortOrder(e.target.value)}
                 >
                     <option value="asc">Asc</option>
                     <option value="desc">Desc</option>
                 </select>
             </div>
+            {filteredAndSortedFiles.length === 0 && (
+                <p className="text-gray-500 text-center mt-4">No files found matching the search query.</p>
+            )}
             <FileList
                 files={filteredAndSortedFiles}
                 onDownload={handleDownloadFile}
