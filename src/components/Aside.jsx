@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faGear, faFolderClosed, faChartArea, faSignOutAlt, faCloudMoonRain, faTerminal, faClipboard } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSignOutAlt, faCloudMoonRain, faClipboard, faTerminal, faChartArea, faFolderClosed, faGear } from '@fortawesome/free-solid-svg-icons';
 
 const Aside = ({ onLogout }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +55,7 @@ const Aside = ({ onLogout }) => {
 
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out w-72 bg-gray-800 text-gray-100 p-6 `}
+                className={`fixed inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white p-6`}
                 aria-hidden={!isOpen}
             >
                 <h2 className="text-2xl font-semibold mb-8 text-center text-blue-400">Dashboard</h2>
@@ -64,61 +64,61 @@ const Aside = ({ onLogout }) => {
                         <li className="mb-6">
                             <Link
                                 to="/statistics"
-                                className="flex items-center py-3 px-4 rounded bg-gray-700 hover:bg-blue-500 transition-all duration-300 hover:text-white"
+                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <FontAwesomeIcon icon={faChartArea} className="h-5 w-5 mr-3" />
-                                <span className="text-base">Statistics</span>
+                                <span>Statistics</span>
                             </Link>
                         </li>
                         <li className="mb-6">
                             <Link
                                 to="/files"
-                                className="flex items-center py-3 px-4 rounded bg-gray-700 hover:bg-blue-500 transition-all duration-300 hover:text-white"
+                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <FontAwesomeIcon icon={faFolderClosed} className="h-5 w-5 mr-3" />
-                                <span className="text-base">Manage Files</span>
+                                <span>Manage Files</span>
                             </Link>
                         </li>
                         <li className="mb-6">
                             <Link
                                 to="/weather"
-                                className="flex items-center py-3 px-4 rounded bg-gray-700 hover:bg-blue-500 transition-all duration-300 hover:text-white"
+                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <FontAwesomeIcon icon={faCloudMoonRain} className="h-5 w-5 mr-3" />
-                                <span className="text-base">Weather</span>
+                                <span>Weather</span>
                             </Link>
                         </li>
                         <li className="mb-6">
                             <Link
                                 to="/editor"
-                                className="flex items-center py-3 px-4 rounded bg-gray-700 hover:bg-blue-500 transition-all duration-300 hover:text-white"
+                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <FontAwesomeIcon icon={faTerminal} className="h-5 w-5 mr-3" />
-                                <span className="text-base">Code Space</span>
+                                <span>Code Space</span>
                             </Link>
                         </li>
                         <li className="mb-6">
                             <Link
                                 to="/notepad"
-                                className="flex items-center py-3 px-4 rounded bg-gray-700 hover:bg-blue-500 transition-all duration-300 hover:text-white"
+                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <FontAwesomeIcon icon={faClipboard} className="h-5 w-5 mr-3" />
-                                <span className="text-base">NotePad</span>
+                                <span>NotePad</span>
                             </Link>
                         </li>
                         <li className="mb-6">
                             <Link
                                 to="/settings"
-                                className="flex items-center py-3 px-4 rounded bg-gray-700 hover:bg-blue-500 transition-all duration-300 hover:text-white"
+                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <FontAwesomeIcon icon={faGear} className="h-5 w-5 mr-3" />
-                                <span className="text-base">Show System</span>
+                                <span>Show System</span>
                             </Link>
                         </li>
                     </ul>

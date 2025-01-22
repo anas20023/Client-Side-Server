@@ -128,8 +128,9 @@ const Files = () => {
     }, [files, searchQuery, sortOrder]);
 
     return (
-        <section id="files" className="p-6 bg-gray-100 min-h-screen">
-            <h3 className="text-3xl font-extrabold text-center mb-8 text-gray-800">Manage Files</h3>
+        <section id="files" className="p-6 bg-gray-900 text-white min-h-screen">
+            <h3 className="text-3xl font-extrabold text-center mb-8 text-white">Manage Files</h3>
+            
             <UploadSection
                 fileNames={fileNames}
                 handleDrop={handleDrop}
@@ -137,18 +138,17 @@ const Files = () => {
                 loading={loading}
                 uploadProgress={uploadProgress}
             />
-            <div className="flex flex-row justify-between items-center my-8 gap-1 lg:gap-2">
+            
+            <div className="flex flex-row justify-between items-center my-8 gap-2">
                 <input
                     type="search"
-                    className="w-9/12 p-2 pl-8 text-sm text-gray-700 placeholder-gray
-                border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+                    className="w-9/12 p-2 pl-8 text-sm text-gray-700 placeholder-gray border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Search files..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <select
-                    className="w-1/4 p-2 text-sm text-gray-700 placeholder-gray
-                border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+                    className="w-1/4 p-2 text-sm text-gray-700 placeholder-gray border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
                 >
@@ -156,9 +156,11 @@ const Files = () => {
                     <option value="desc">Desc</option>
                 </select>
             </div>
+
             {filteredAndSortedFiles.length === 0 && (
                 <p className="text-gray-500 text-center mt-4">No files found matching the search query.</p>
             )}
+
             <FileList
                 files={filteredAndSortedFiles}
                 onDownload={handleDownloadFile}
@@ -166,11 +168,17 @@ const Files = () => {
                 downloadingFileId={downloadingFileId}
                 deletingFileId={isDeletingId}
             />
-            <Notification
-                type={notification.type}
-                message={notification.message}
-                onClose={() => setNotification({ type: '', message: '' })}
-            />
+
+            {/* Daisy UI Notification */}
+            {notification.message && (
+                <div className={`toast ${notification.type === 'error' ? 'toast-error' : 'toast-success'}`}>
+                    <div className="max-w-xs">
+                        <div className="alert">
+                            <span>{notification.message}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 };

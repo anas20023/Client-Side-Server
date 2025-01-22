@@ -20,7 +20,7 @@ import { AiOutlineLink } from 'react-icons/ai';
 import Notification from './Notification';
 
 const fileIconMap = {
-    'pdf': { icon: FaFilePdf, color: 'text-red-600' },
+   'pdf': { icon: FaFilePdf, color: 'text-red-600' },
     'xlsx': { icon: FaFileExcel, color: 'text-green-600' },
     'xls': { icon: FaFileExcel, color: 'text-green-600' },
     'jpg': { icon: FaFileImage, color: 'text-yellow-600' },
@@ -74,22 +74,37 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
     const { icon: Icon, color } = getFileIcon(file.fileName);
     const [notification, setNotification] = useState({ type: '', message: '' });
 
-    // Function to copy link to clipboard
+    // Function to handle link copying
     const copyLinkToClipboard = () => {
         navigator.clipboard.writeText(file.fileURL)
             .then(() => {
-                setNotification({ type: 'success', message: 'Link copied to clipboard!' });
-                setTimeout(() => setNotification({ type: '', message: '' }), 3000); // Clear notification after 3 seconds
+                showNotification('success', 'Link copied to clipboard!');
             })
-            .catch(err => {
-                console.error('Failed to copy: ', err);
-                setNotification({ type: 'error', message: 'Failed to copy link.' });
+            .catch(() => {
+                showNotification('error', 'Failed to copy link.');
             });
     };
 
+    // Function to show notification
+    const showNotification = (type, message) => {
+        setNotification({ type, message });
+        setTimeout(() => setNotification({ type: '', message: '' }), 3000); // Clear after 3 seconds
+    };
+
+    // Handling notifications for download and delete actions
+    const handleDownload = () => {
+        showNotification('success', `${file.fileName} is downloading...`);
+        onDownload(file.fileURL, file.id);
+    };
+
+    const handleDelete = () => {
+        showNotification('success', `${file.fileName} is being deleted.`);
+        onDelete(file.id);
+    };
+
     return (
-        <li className="flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 rounded-lg shadow-sm mb-4">
-            {/* Notification alert at the top-right corner */}
+        <li className="flex flex-col sm:flex-row justify-between items-center p-4 bg-base-100 rounded-lg shadow-lg mb-4">
+            {/* Notification alert */}
             {notification.message && (
                 <Notification
                     type={notification.type}
@@ -97,24 +112,26 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
                     onClose={() => setNotification({ type: '', message: '' })}
                 />
             )}
+            {/* File details */}
             <div className="w-full sm:w-2/3 flex items-center mb-4 sm:mb-0">
                 <Icon className={`h-6 w-6 ${color} mr-3`} />
                 <div className="flex flex-col">
-                    <span className="font-semibold text-sm sm:text-base overflow-hidden">{file.fileName}</span>
+                    <span className="font-semibold text-sm sm:text-base truncate">{file.fileName}</span>
                     <span className="text-gray-500 text-xs sm:text-sm">{file.uploadDate}</span>
                 </div>
             </div>
+            {/* Action buttons */}
             <div className="w-full sm:w-1/4 flex justify-end space-x-2">
                 <button
                     onClick={copyLinkToClipboard}
                     title="Copy link"
-                    className="bg-blue-700 text-white px-3 py-2 rounded flex items-center justify-center"
+                    className="btn btn-sm btn-info flex items-center justify-center"
                 >
                     <AiOutlineLink />
                 </button>
                 <button
-                    onClick={() => onDownload(file.fileURL, file.id)}
-                    className={`bg-green-500 text-white px-3 py-2 rounded flex items-center justify-center ${isDownloading ? 'bg-green-400' : ''}`}
+                    onClick={handleDownload}
+                    className={`btn btn-sm btn-success flex items-center justify-center ${isDownloading ? 'btn-disabled' : ''}`}
                     disabled={isDownloading}
                     title="Download"
                 >
@@ -122,8 +139,8 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
                     {isDownloading ? 'Downloading...' : 'Download'}
                 </button>
                 <button
-                    onClick={() => onDelete(file.id)}
-                    className={`bg-red-500 text-white px-3 py-2 rounded flex items-center justify-center ${isDeleting ? 'bg-red-400' : ''}`}
+                    onClick={handleDelete}
+                    className={`btn btn-sm btn-error flex items-center justify-center ${isDeleting ? 'btn-disabled' : ''}`}
                     disabled={isDeleting}
                     title="Delete"
                 >

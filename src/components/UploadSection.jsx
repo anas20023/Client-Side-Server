@@ -10,34 +10,36 @@ const UploadSection = ({ fileNames, handleDrop, handleUpload, loading, uploadPro
     });
 
     return (
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-            <h4 className="text-xl font-bold mb-4">Upload Files</h4>
+        <div className="bg-gray-900 shadow-xl rounded-lg p-6 mb-6 border border-gray-700">
+            <h4 className="text-2xl font-bold text-gray-100 mb-4 text-center">Upload Files</h4>
             <div className="flex flex-col items-center">
-                <div {...getRootProps({ className: 'border-2 border-dashed border-gray-300 pt-8 rounded-lg  cursor-pointer w-full max-w-6xl h-24' })}>
+                <div
+                    {...getRootProps({
+                        className: 'border-2 border-dashed border-gray-600 rounded-lg cursor-pointer w-full max-w-6xl h-32 flex items-center justify-center bg-gray-800 hover:bg-gray-700 transition duration-300',
+                    })}
+                >
                     <input {...getInputProps()} />
-                    <p className="text-center text-gray-500">Drag & drop files here, or click to select files</p>
-                    {fileNames.length > 0 && (
-                        <div className="mt-2">
-                            <span className="font-semibold">Selected Files:</span>
-                            <ul className="list-disc pl-5 text-gray-600">
-                                {fileNames.map((name, index) => (
-                                    <li key={index} className="truncate">{name}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                    <p className="text-gray-400 text-lg">Drag & drop files here, or click to select files</p>
                 </div>
+                {fileNames.length > 0 && (
+                    <div className="mt-4 w-full text-center">
+                        <span className="font-semibold text-gray-300">Selected Files:</span>
+                        <ul className="list-disc pl-5 text-gray-400 mt-2">
+                            {fileNames.map((name, index) => (
+                                <li key={index} className="truncate">{name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
                 <button
                     onClick={handleUpload}
-                    className={`bg-blue-500 text-white px-6 py-3 rounded mt-4 ${loading ? 'bg-blue-400' : ''} flex items-center justify-center`}
+                    className={`btn btn-primary mt-6 w-full max-w-xs text-lg ${loading ? 'btn-disabled' : ''}`}
                     disabled={loading}
                 >
                     {loading ? (
-                        <span className="flex items-center">
-                            <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 12a8 8 0 018-8 8 8 0 018 8 8 8 0 01-8 8 8 8 0 01-8-8z" />
-                            </svg>
-                            <span>{`Uploading... ${uploadProgress}%`}</span>
+                        <span className="flex items-center gap-2">
+                            <span className="loading loading-spinner"></span>
+                            Uploading... {uploadProgress}%
                         </span>
                     ) : (
                         'Upload'
