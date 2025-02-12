@@ -128,8 +128,8 @@ const Files = () => {
     }, [files, searchQuery, sortOrder]);
 
     return (
-        <section id="files" className="p-6 bg-gray-900 text-white min-h-screen">
-            <h3 className="text-3xl font-extrabold text-center mb-8 text-white">Manage Files</h3>
+        <section id="files" className="p-6 bg-white dark:bg-gray-900 text-white min-h-screen">
+            <h3 className="text-3xl font-extrabold text-center mb-8 text-slate-800 dark:text-white">Manage Files</h3>
             
             <UploadSection
                 fileNames={fileNames}

@@ -103,7 +103,7 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
     };
 
     return (
-        <li className="flex flex-col sm:flex-row justify-between items-center p-4 bg-base-100 rounded-lg shadow-lg mb-4">
+        <li className="flex flex-col sm:flex-row justify-between items-center p-4 bg-slate-100 dark:bg-slate-800 rounded-lg shadow-lg mb-4">
             {/* Notification alert */}
             {notification.message && (
                 <Notification
@@ -116,7 +116,7 @@ const FileItem = ({ file, onDownload, onDelete, isDownloading, isDeleting }) => 
             <div className="w-full sm:w-2/3 flex items-center mb-4 sm:mb-0">
                 <Icon className={`h-6 w-6 ${color} mr-3`} />
                 <div className="flex flex-col">
-                    <span className="font-semibold text-sm sm:text-base truncate">{file.fileName}</span>
+                    <span className="font-semibold text-slate-600 dark:text-white text-sm sm:text-base truncate">{file.fileName}</span>
                     <span className="text-gray-500 text-xs sm:text-sm">{file.uploadDate}</span>
                 </div>
             </div>
