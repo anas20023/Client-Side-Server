@@ -6,7 +6,6 @@ import FileList from './FileList';
 import Notification from './Notification';
 
 // Custom hook to debounce a value
-// Custom hook to debounce a value
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
     
@@ -119,6 +118,7 @@ const Files = () => {
         try {
             const link = document.createElement('a');
             link.href = fileURL;
+            link.target="_blank";
             link.download = fileURL.split('/').pop();
             document.body.appendChild(link);
             link.click();
