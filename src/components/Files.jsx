@@ -5,6 +5,36 @@ import UploadSection from './UploadSection';
 import FileList from './FileList';
 import Notification from './Notification';
 
+// Custom hook to debounce a value
+// Custom hook to debounce a value
+const useDebounce = (value, delay) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+    
+    return debouncedValue;
+};
+
+// Helper function to perform character-by-character (subsequence) matching
+const isSubsequence = (query, text) => {
+    if (!query) return true; // if query is empty, always match
+    let qi = 0;
+    for (let char of text) {
+        if (char === query[qi]) {
+            qi++;
+        }
+        if (qi === query.length) return true;
+    }
+    return false;
+};
 const Files = () => {
     const [files, setFiles] = useState([]);
     const [fileContents, setFileContents] = useState([]);
@@ -16,7 +46,6 @@ const Files = () => {
     const [notification, setNotification] = useState({ type: '', message: '' });
     const [s, setS] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc');
 
     const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
 
@@ -114,18 +143,17 @@ const Files = () => {
         }
     };
 
-    const filteredAndSortedFiles = useMemo(() => {
-        const query = searchQuery.trim().toLowerCase();
-        const filteredFiles = files.filter((file) => {
-            return !query || (file.name && file.name.toLowerCase().includes(query));
-        });
+    // Debounce the search query for 300ms to prevent filtering on every keystroke
+    const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 300);
 
-        return filteredFiles.sort((a, b) => {
-            const nameA = (a.name || '').toLowerCase();
-            const nameB = (b.name || '').toLowerCase();
-            return sortOrder === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+    const filteredFiles = useMemo(() => {
+        const query = debouncedSearchQuery.trim();
+        return files.filter((file) => {
+            const fileName = file.fileName ? file.fileName.toLowerCase() : '';
+            return isSubsequence(query, fileName);
         });
-    }, [files, searchQuery, sortOrder]);
+    }, [files, debouncedSearchQuery]);
+    
 
     return (
         <section id="files" className="p-6 bg-white dark:bg-gray-900 text-white min-h-screen">
@@ -142,34 +170,25 @@ const Files = () => {
             <div className="flex flex-row justify-between items-center my-8 gap-2">
                 <input
                     type="search"
-                    className="w-9/12 p-2 pl-8 text-sm text-gray-700 placeholder-gray border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+                    className="w-full p-2 pl-8 text-sm text-gray-700 placeholder-gray border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Search files..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <select
-                    className="w-1/4 p-2 text-sm text-gray-700 placeholder-gray border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value)}
-                >
-                    <option value="asc">Asc</option>
-                    <option value="desc">Desc</option>
-                </select>
             </div>
 
-            {filteredAndSortedFiles.length === 0 && (
+            {filteredFiles.length === 0 && (
                 <p className="text-gray-500 text-center mt-4">No files found matching the search query.</p>
             )}
 
             <FileList
-                files={filteredAndSortedFiles}
+                files={filteredFiles}
                 onDownload={handleDownloadFile}
                 onDelete={handleDeleteFile}
                 downloadingFileId={downloadingFileId}
                 deletingFileId={isDeletingId}
             />
 
-            {/* Daisy UI Notification */}
             {notification.message && (
                 <div className={`toast ${notification.type === 'error' ? 'toast-error' : 'toast-success'}`}>
                     <div className="max-w-xs">
