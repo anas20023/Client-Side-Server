@@ -1,21 +1,25 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaEnvelope, FaGithub, FaBehance } from 'react-icons/fa';
 import { Eye, EyeOff } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Auth = ({ onLogin }) => {
-    const [username, setUsername] = useState('user@admin');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
         try {
-            const response = await fetch('https://cloud-file-storage-backend.vercel.app/api/authenticate', {
+            const response = await fetch('https://sgm.anasibnbelal.live/api/auth/getuser', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
@@ -26,7 +30,8 @@ const Auth = ({ onLogin }) => {
             }
 
             const data = await response.json();
-            if (data.authenticated) {
+            //console.log(data)
+            if (data.success) {
                 localStorage.setItem('authenticated', 'true');
                 onLogin();
             } else {
@@ -35,29 +40,33 @@ const Auth = ({ onLogin }) => {
         } catch (error) {
             console.error('There was an error with the login:', error);
             setError('Invalid credentials');
+            setUsername("");
+            setPassword("");
         } finally {
             setLoading(false);
         }
     };
 
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+        }
+    }, [error]);
+
     return (
         <div className="min-h-screen w-full bg-[#4361ee] flex items-center justify-center p-4 font-inter">
             <div className="w-full max-w-[1000px] bg-white rounded-2xl shadow-xl flex overflow-hidden flex-col md:flex-row">
-                {/* Login Form Section */}
-                <div className="w-full md:w-1/2 p-8 md:p-12">
+                <div className="w-full flex flex-col justify-center items-center md:w-1/2 p-8 md:p-12">
                     <h2 className="text-2xl font-bold mb-8">Login</h2>
                     <form onSubmit={handleSubmit} className="space-y-10">
-                        <div className="space-y-2">
-                            <input
-                                type="text"
-                                placeholder="Username or email"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg border bg-gray-100 focus:outline-none focus:border-[#4361ee] transition-colors"
-                                required
-                                readOnly
-                            />
-                        </div>
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="w-full px-4 py-3 rounded-lg border bg-gray-100 focus:outline-none focus:border-[#4361ee] transition-colors"
+                            required
+                        />
 
                         <div className="relative w-full">
                             <input
@@ -77,8 +86,6 @@ const Auth = ({ onLogin }) => {
                             </button>
                         </div>
 
-
-                        {error && <p className="text-red-500 text-center">{error}</p>}
                         <button
                             type="submit"
                             className={`w-full py-3 px-4 bg-[#4361ee] text-white rounded-lg font-medium hover:bg-[#3651d4] transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
@@ -86,10 +93,10 @@ const Auth = ({ onLogin }) => {
                         >
                             {loading ? 'Logging in...' : 'Login'}
                         </button>
-                       
                     </form>
+
                 </div>
-                {/* Illustration Section */}
+
                 <div className="hidden md:flex md:w-1/2 bg-gray-50 p-12 flex-col justify-center items-center text-center">
                     <img
                         src="https://media-hosting.imagekit.io//a669204e1bce4a1f/vecteezy_3d-isometric-web-hosting-server-transparent-background_22418264.png?Expires=1833384538&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=UpLqSq21ha2RrDnaxBUo9T1TxYBAaBSf5LcTvUAUAuNJ~-KSWJvoG-kLct0GmdBPDuVHpK1xVeBczyUgcfRMXYTHI581AEPdLR7fuBB8uEndYa6DBfnyvEOm7~FMM5XT1F3OgTSmbFLIKDRiR750VbXCHUmn~jMuposKN2bMniSluNwkfCbMrmgD51QRBIvtuKlZJLtt0nv537hxuHIqGpBy4CKXd5-QO20tf7PkxX6rkJEJ~8jFeoCxrJoH81NWO6sYM2DUVjCfUxo8qrJZh3WveAPTpdnuK~IBWHSrHWbq7Mg-HOLZ4PEBocUcIOtO02tFj8R8Xoam1YPFENDtcg__"
@@ -113,6 +120,7 @@ const Auth = ({ onLogin }) => {
                     </div>
                 </div>
             </div>
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
     );
 };
