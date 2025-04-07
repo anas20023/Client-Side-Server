@@ -48,6 +48,9 @@ function App() {
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem('authenticated');
+    localStorage.removeItem("user");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_name");
     setIsAuthenticated(false);
     clearTimeout(logoutTimerRef.current);
   }, []);

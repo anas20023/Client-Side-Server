@@ -63,7 +63,7 @@ const Statistics = () => {
     if (error) return <p className="text-error text-center mt-4">Error: {error}</p>;
 
     return (
-        <section id="statistics" className="p-6 bg-base-100 text-base-content">
+        <section id="statistics" className="p-6 bg-base-100 text-base-content min-h-[100%]">
             <div className="text-3xl py-3 font-semibold text-center">Dashboard</div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6 mb-12">

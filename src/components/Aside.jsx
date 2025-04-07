@@ -58,7 +58,16 @@ const Aside = ({ onLogout }) => {
                 className={`fixed inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white p-6`}
                 aria-hidden={!isOpen}
             >
-                <h2 className="text-2xl font-semibold mb-8 text-center text-blue-400">Dashboard</h2>
+                <h2 className="text-2xl font-semibold mb-6  text-center text-blue-400">Dashboard</h2>
+                <div className="w-full max-w-sm mx-auto my-4 p-4 bg-slate-800 rounded-xl">
+                    <p className="text-center text-white text-lg font-medium bg-slate-700 px-4 py-2 rounded mb-2">
+                        {`${localStorage.getItem("user").replace(/"/g, "")}`}
+                    </p>
+                    <p className="text-center text-slate-300 text-xs">
+                        {localStorage.getItem("user_email").replace(/"/g, "")}
+                    </p>
+                </div>
+
                 <nav>
                     <ul>
                         <li className="mb-6">
@@ -148,7 +157,7 @@ const Aside = ({ onLogout }) => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
                     <div className="bg-white rounded-lg p-6 max-w-sm w-full text-center">
                         <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
-                        <p className="text-gray-600 mb-6">Are you sure you want to logout?</p>
+                        <p className="text-gray-600 mb-6">{`Are you sure you want to logout?`}</p>
                         <div className="flex flex-col lg:flex-row justify-center gap-4 lg:gap-6">
                             <button
                                 onClick={handleCancelLogout}

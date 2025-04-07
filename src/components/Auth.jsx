@@ -33,6 +33,9 @@ const Auth = ({ onLogin }) => {
             //console.log(data)
             if (data.success) {
                 localStorage.setItem('authenticated', 'true');
+                localStorage.setItem('user', JSON.stringify(data.user.name));
+                localStorage.setItem('user_email', JSON.stringify(data.user.email));
+                localStorage.setItem('user_name', JSON.stringify(data.user.username));
                 onLogin();
             } else {
                 setError('Invalid credentials');
