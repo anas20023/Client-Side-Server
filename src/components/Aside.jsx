@@ -2,11 +2,11 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faBars, 
-  faSignOutAlt, 
-  faChartArea, 
-  faFolderClosed, 
+import {
+  faBars,
+  faSignOutAlt,
+  faChartArea,
+  faFolderClosed,
   faGear,
   faXmark,
   faUser,
@@ -31,10 +31,9 @@ const Aside = ({ onLogout }) => {
     setIsOpen(false);
   };
 
-  // Safe user data
   const username = JSON.parse(localStorage.getItem('user') || '"Guest User"');
   const userEmail = JSON.parse(localStorage.getItem('user_email') || '"user@example.com"');
-  const getInitials = name => name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+  const getInitials = name => name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
     <div className="flex">
@@ -53,11 +52,11 @@ const Aside = ({ onLogout }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full z-40 transform transition-transform duration-300 bg-gradient-to-b from-gray-900 to-slate-900 text-white p-4 lg:p-6 shadow-lg
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:relative md:translate-x-0
-          w-64 md:w-20 lg:w-64
-        `}
+        className={`fixed top-0 left-0 h-full z-40 transform transition-transform duration-300 bg-gradient-to-b from-gray-900 to-slate-900 text-white p-4 lg:p-6 shadow-lg min-w-[300px]
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:relative md:translate-x-0
+        w-64 md:w-20 lg:w-64
+      `}
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -71,24 +70,29 @@ const Aside = ({ onLogout }) => {
         <div onClick={toggleProfileDetails} className="cursor-pointer mb-6 p-3 bg-slate-800/40 rounded-xl border border-blue-900/30 backdrop-blur-sm">
           <div className="flex items-center">
             <div className="relative">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-lg font-bold">{getInitials(username)}</div>
+              <div className="w-12 h-12 min-w-[3rem] min-h-[3rem] rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-lg font-bold">
+                {getInitials(username)}
+              </div>
               <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-slate-900 rounded-full flex items-center justify-center border-2 border-blue-500">
                 <FontAwesomeIcon icon={faUser} className="text-cyan-300" size="sm" />
               </div>
             </div>
-            <div className="ml-3 flex items-center">
-              <div className="hidden lg:flex flex-col">
-                <span className="font-bold truncate max-w-[140px]">{username}</span>
-                <div className="flex items-center mt-1 text-blue-300">
-                  <FontAwesomeIcon icon={faEnvelope} size="xs" className="mr-1" />
-                  <span className="truncate max-w-[120px] text-xs">{userEmail}</span>
-                </div>
+
+            {/* Username + Email */}
+            <div className="ml-3 flex-1 flex flex-col overflow-hidden">
+              <span className="font-bold truncate text-sm sm:text-base max-w-full">{username}</span>
+              <div className="flex items-center text-blue-300 mt-1 text-xs sm:text-sm overflow-hidden max-w-full">
+                <FontAwesomeIcon icon={faEnvelope} size="xs" className="mr-1" />
+                <span className="truncate">{userEmail}</span>
               </div>
-              <FontAwesomeIcon icon={showProfileDetails ? faChevronUp : faChevronDown} className="ml-auto lg:hidden" />
             </div>
+
+            {/* Toggle arrow (only on small screens) */}
+            <FontAwesomeIcon icon={showProfileDetails ? faChevronUp : faChevronDown} className="ml-2 lg:hidden" />
           </div>
-          {/* Details */}
-          <div className={`${showProfileDetails ? 'block' : 'hidden'} lg:block mt-4 pt-4 border-t border-blue-900/30`}>            
+
+          {/* Online status */}
+          <div className={`${showProfileDetails ? 'block' : 'hidden'} lg:block mt-4 pt-4 border-t border-blue-900/30`}>
             <div className="flex items-center">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
               <span className="text-green-300 text-xs font-medium">Online</span>
@@ -102,7 +106,7 @@ const Aside = ({ onLogout }) => {
             {[
               { page: 'statistics', icon: faChartArea, label: 'Statistics', to: '/statistics' },
               { page: 'files', icon: faFolderClosed, label: 'Manage Files', to: '/files' },
-              { page: 'settings', icon: faGear, label: 'System Settings', to: '/settings' }
+              { page: 'settings', icon: faGear, label: 'System Info', to: '/settings' }
             ].map(item => (
               <li key={item.page}>
                 <Link
