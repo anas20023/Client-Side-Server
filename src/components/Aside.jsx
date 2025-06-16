@@ -1,182 +1,161 @@
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSignOutAlt, faCloudMoonRain, faClipboard, faTerminal, faChartArea, faFolderClosed, faGear } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faBars, 
+  faSignOutAlt, 
+  faChartArea, 
+  faFolderClosed, 
+  faGear,
+  faXmark,
+  faUser,
+  faEnvelope,
+  faChevronDown,
+  faChevronUp
+} from '@fortawesome/free-solid-svg-icons';
 
 const Aside = ({ onLogout }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [showLogoutModal, setShowLogoutModal] = useState(false); // Modal state
+  const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [activePage, setActivePage] = useState('statistics');
+  const [showProfileDetails, setShowProfileDetails] = useState(false);
 
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
+  const toggleSidebar = () => setIsOpen(prev => !prev);
+  const toggleProfileDetails = () => setShowProfileDetails(prev => !prev);
+  const handleLogoutClick = () => setShowLogoutModal(true);
+  const handleConfirmLogout = () => { setShowLogoutModal(false); onLogout(); };
+  const handleCancelLogout = () => setShowLogoutModal(false);
+  const handleNavClick = page => {
+    setActivePage(page);
+    setIsOpen(false);
+  };
 
-    const handleLogoutClick = () => {
-        setShowLogoutModal(true); // Show confirmation modal on logout click
-    };
+  // Safe user data
+  const username = JSON.parse(localStorage.getItem('user') || '"Guest User"');
+  const userEmail = JSON.parse(localStorage.getItem('user_email') || '"user@example.com"');
+  const getInitials = name => name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
 
-    const handleConfirmLogout = () => {
-        setShowLogoutModal(false); // Close the modal
-        onLogout(); // Proceed with logout
-    };
+  return (
+    <div className="flex">
+      {/* Mobile top bar */}
+      <div className="md:hidden flex items-center justify-between w-full p-4 bg-slate-800">
+        <button onClick={toggleSidebar} aria-label="Open sidebar" className="text-white">
+          <FontAwesomeIcon icon={faBars} size="lg" />
+        </button>
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold">
+            {getInitials(username)}
+          </div>
+          <span className="text-white font-medium truncate">{username.split(' ')[0]}</span>
+        </div>
+      </div>
 
-    const handleCancelLogout = () => {
-        setShowLogoutModal(false); // Just close the modal
-    };
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 h-full z-40 transform transition-transform duration-300 bg-gradient-to-b from-gray-900 to-slate-900 text-white p-4 lg:p-6 shadow-lg
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:relative md:translate-x-0
+          w-64 md:w-20 lg:w-64
+        `}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold hidden lg:block">Dashboard</h2>
+          <button className="md:hidden text-gray-300" onClick={toggleSidebar} aria-label="Close sidebar">
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        </div>
 
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth >= 768) {
-                setIsOpen(true);
-            } else {
-                setIsOpen(false);
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-        handleResize(); // Initial check
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    return (
-        <>
-            {/* Menu Icon for Smaller Screens */}
-            {!isOpen && (
-                <button
-                    className="md:hidden fixed top-4 left-4 z-50 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    onClick={toggleSidebar}
-                    aria-label="Open sidebar"
-                >
-                    <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
-                </button>
-            )}
-
-            {/* Sidebar */}
-            <aside
-                className={`fixed inset-y-0 left-0 z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white p-6`}
-                aria-hidden={!isOpen}
-            >
-                <h2 className="text-2xl font-semibold mb-6  text-center text-blue-400">Dashboard</h2>
-                <div className="w-full max-w-sm mx-auto my-4 p-4 bg-slate-800 rounded-xl">
-                    <p className="text-center text-white text-lg font-medium bg-slate-700 px-4 py-2 rounded mb-2">
-                        {`${localStorage.getItem("user").replace(/"/g, "")}`}
-                    </p>
-                    <p className="text-center text-slate-300 text-xs">
-                        {localStorage.getItem("user_email").replace(/"/g, "")}
-                    </p>
+        {/* Profile Box */}
+        <div onClick={toggleProfileDetails} className="cursor-pointer mb-6 p-3 bg-slate-800/40 rounded-xl border border-blue-900/30 backdrop-blur-sm">
+          <div className="flex items-center">
+            <div className="relative">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-lg font-bold">{getInitials(username)}</div>
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-slate-900 rounded-full flex items-center justify-center border-2 border-blue-500">
+                <FontAwesomeIcon icon={faUser} className="text-cyan-300" size="sm" />
+              </div>
+            </div>
+            <div className="ml-3 flex items-center">
+              <div className="hidden lg:flex flex-col">
+                <span className="font-bold truncate max-w-[140px]">{username}</span>
+                <div className="flex items-center mt-1 text-blue-300">
+                  <FontAwesomeIcon icon={faEnvelope} size="xs" className="mr-1" />
+                  <span className="truncate max-w-[120px] text-xs">{userEmail}</span>
                 </div>
+              </div>
+              <FontAwesomeIcon icon={showProfileDetails ? faChevronUp : faChevronDown} className="ml-auto lg:hidden" />
+            </div>
+          </div>
+          {/* Details */}
+          <div className={`${showProfileDetails ? 'block' : 'hidden'} lg:block mt-4 pt-4 border-t border-blue-900/30`}>            
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
+              <span className="text-green-300 text-xs font-medium">Online</span>
+            </div>
+          </div>
+        </div>
 
-                <nav>
-                    <ul>
-                        <li className="mb-6">
-                            <Link
-                                to="/statistics"
-                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <FontAwesomeIcon icon={faChartArea} className="h-5 w-5 mr-3" />
-                                <span>Statistics</span>
-                            </Link>
-                        </li>
-                        <li className="mb-6">
-                            <Link
-                                to="/files"
-                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <FontAwesomeIcon icon={faFolderClosed} className="h-5 w-5 mr-3" />
-                                <span>Manage Files</span>
-                            </Link>
-                        </li>
-                        <li className="mb-6">
-                            <Link
-                                to="/weather"
-                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <FontAwesomeIcon icon={faCloudMoonRain} className="h-5 w-5 mr-3" />
-                                <span>Weather</span>
-                            </Link>
-                        </li>
-                        <li className="mb-6">
-                            <Link
-                                to="/editor"
-                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <FontAwesomeIcon icon={faTerminal} className="h-5 w-5 mr-3" />
-                                <span>Code Space</span>
-                            </Link>
-                        </li>
-                        <li className="mb-6">
-                            <Link
-                                to="/notepad"
-                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <FontAwesomeIcon icon={faClipboard} className="h-5 w-5 mr-3" />
-                                <span>NotePad</span>
-                            </Link>
-                        </li>
-                        <li className="mb-6">
-                            <Link
-                                to="/settings"
-                                className="flex items-center py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 dark:hover:bg-blue-600 transition-all duration-300"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <FontAwesomeIcon icon={faGear} className="h-5 w-5 mr-3" />
-                                <span>Show System</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
-                {/* Logout Button */}
-                <button
-                    onClick={handleLogoutClick}
-                    className="w-full flex items-center justify-center bg-red-600 hover:bg-red-700 transition-all duration-300 text-white py-3 rounded-lg shadow-lg hover:shadow-2xl mt-10 focus:outline-none focus:ring-2 focus:ring-red-400"
-                    aria-label="Logout"
+        {/* Navigation */}
+        <nav className="flex-1">
+          <ul className="space-y-3">
+            {[
+              { page: 'statistics', icon: faChartArea, label: 'Statistics', to: '/statistics' },
+              { page: 'files', icon: faFolderClosed, label: 'Manage Files', to: '/files' },
+              { page: 'settings', icon: faGear, label: 'System Settings', to: '/settings' }
+            ].map(item => (
+              <li key={item.page}>
+                <Link
+                  to={item.to}
+                  onClick={() => handleNavClick(item.page)}
+                  className={`flex items-center p-3 rounded-lg transition-all duration-300
+                    ${activePage === item.page ? 'bg-blue-900/30 border-l-4 border-cyan-400' : 'hover:bg-blue-900/20'}
+                  `}
                 >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="h-5 w-5 mr-2" />
-                    Logout
-                </button>
-            </aside>
+                  <div className="w-8 h-8 bg-blue-800 rounded-full flex items-center justify-center mr-3">
+                    <FontAwesomeIcon icon={item.icon} />
+                  </div>
+                  <span className="truncate text-sm lg:text-base">{item.label}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-            {/* Overlay for mobile when the sidebar is open */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black opacity-60 z-30 md:hidden"
-                    onClick={toggleSidebar}
-                    aria-hidden={!isOpen}
-                ></div>
-            )}
+        {/* Logout */}
+        <button
+          onClick={handleLogoutClick}
+          className="w-full flex items-center justify-center mt-8 py-3 rounded-lg bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 transition-shadow shadow-lg"
+        >
+          <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+          <span className="hidden lg:inline">Logout</span>
+        </button>
+      </aside>
 
-            {/* Logout Confirmation Modal */}
-            {showLogoutModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-                    <div className="bg-white rounded-lg p-6 max-w-sm w-full text-center">
-                        <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
-                        <p className="text-gray-600 mb-6">{`Are you sure you want to logout?`}</p>
-                        <div className="flex flex-col lg:flex-row justify-center gap-4 lg:gap-6">
-                            <button
-                                onClick={handleCancelLogout}
-                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleConfirmLogout}
-                                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
-                            >
-                                Confirm
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </>
-    );
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-slate-900 p-6 rounded-2xl max-w-sm w-full shadow-2xl border border-slate-700 text-center">
+            <div className="mx-auto mb-4 w-20 h-20 rounded-full bg-gradient-to-r from-rose-700 to-rose-800 flex items-center justify-center">
+              <FontAwesomeIcon icon={faSignOutAlt} size="2x" />
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-2">Confirm Logout</h3>
+            <p className="text-slate-400 mb-6">
+              Are you sure you want to sign out, <span className="font-semibold text-white">{username.split(' ')[0]}</span>?
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button onClick={handleCancelLogout} className="flex-1 py-3 px-6 bg-slate-800 rounded-xl hover:bg-slate-700 font-medium">
+                Cancel
+              </button>
+              <button onClick={handleConfirmLogout} className="flex-1 py-3 px-6 bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 rounded-xl font-medium shadow-md">
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Aside;
