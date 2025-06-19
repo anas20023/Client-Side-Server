@@ -12,7 +12,6 @@ const Statistics = () => {
     const [fileFormats, setFileFormats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [notes, setNotes] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,11 +24,6 @@ const Statistics = () => {
                 const statsResult = await statsResponse.json();
                 setData(statsResult);
 
-                // Fetch notes
-                const notesResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/notes');
-                if (!notesResponse.ok) throw new Error('Failed to fetch notes');
-                const notesResult = await notesResponse.json();
-                setNotes(notesResult);
 
                 // Fetch file formats
                 const formatsResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/file-formats');
@@ -126,14 +120,14 @@ const Statistics = () => {
                             <div className="w-full bg-gray-200 rounded-full h-2">
                                 <div 
                                     className="bg-purple-600 h-2 rounded-full" 
-                                    style={{ width: `${Math.min(data.storageUsed / 50 * 100, 100)}%` }}
+                                    style={{ width: `${Math.min(data.storageUsed / 512 * 1000, 100)}%` }}
                                 ></div>
                             </div>
-                            <p className="text-gray-500 text-sm mt-2">50 GB available</p>
+                            <p className="text-gray-500 text-sm mt-2">512 MB available</p>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 transition-transform hover:scale-[1.02]">
+                    {/* <div className="bg-white rounded-xl shadow-lg p-6 transition-transform hover:scale-[1.02]">
                         <div className="flex items-center">
                             <div className="bg-amber-100 p-3 rounded-lg">
                                 <FaStickyNote className="text-amber-600 text-2xl" />
@@ -146,7 +140,7 @@ const Statistics = () => {
                         <div className="mt-4 pt-4 border-t border-gray-100">
                             <p className="text-sm text-gray-500">Stored notes</p>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="bg-white rounded-xl shadow-lg p-6 transition-transform hover:scale-[1.02]">
                         <div className="flex items-center">
