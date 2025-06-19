@@ -5,6 +5,7 @@ import { TbWorldBolt } from "react-icons/tb";
 import { Eye, EyeOff } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import img from '../assets/pngicon.png' 
 
 const Auth = ({ onLogin }) => {
     const [username, setUsername] = useState('');
@@ -130,7 +131,7 @@ const Auth = ({ onLogin }) => {
                 {/* Right Panel - Illustration */}
                 <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#f0f4ff] to-[#e6ebff] p-10 flex-col justify-center items-center text-center">
                     <div className="mb-8">
-                       <img src="src\assets\server-concept-illustration.png" className='h-80' alt="" />
+                       <img src={img} className='h-80' alt="" />
                     </div>
                     <p className="text-gray-700 italic mb-6">&quot; Want a trial ? Contact Now &quot;</p>
                     
