@@ -61,7 +61,7 @@ const Files = () => {
         }
 
         try {
-            const url="https://cloud-file-storage-backend.vercel.app/api/files"
+            const url = "https://cloud-file-storage-backend.vercel.app/api/files"
             // const url="http://localhost:3000/api/files"
             const response = await axios.get(
                 url,
@@ -118,7 +118,7 @@ const Files = () => {
         formData.append('user_name', userName);
 
         try {
-            const url ="https://cloud-file-storage-backend.vercel.app/api/upload";
+            const url = "https://cloud-file-storage-backend.vercel.app/api/upload";
             // const url = "http://localhost:3000/api/upload";
 
             await axios.post(url, formData, {
@@ -174,17 +174,33 @@ const Files = () => {
     };
 
     const handleDeleteFile = async (id) => {
+        const userName = localStorage.getItem('user_name');
+        if (!userName) {
+            setNotification({ type: 'error', message: 'User not logged in.' });
+            return;
+        }
+
         setIsDeletingId(id);
         try {
-            await axios.delete(`https://cloud-file-storage-backend.vercel.app/api/files/${id}`);
+            await axios.delete(
+                `https://cloud-file-storage-backend.vercel.app/api/files/${id}`,
+                {
+                    params: { user_name: userName },
+                }
+            );
+
+            setNotification({ type: 'success', message: 'File deleted successfully!' });
             fetchFiles();
         } catch (error) {
-            setNotification({ type: 'error', message: 'Failed to delete file. Please try again.' });
+            setNotification({
+                type: 'error',
+                message: 'Failed to delete file. Please try again.',
+            });
         } finally {
             setIsDeletingId(null);
-            setNotification({ type: 'success', message: 'File deleted successfully!' });
         }
     };
+
 
     // Debounce the search query for 300ms to prevent filtering on every keystroke
     const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 300);
