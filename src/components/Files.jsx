@@ -8,17 +8,17 @@ import Notification from './Notification';
 // Custom hook to debounce a value
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
-    
+
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedValue(value);
         }, delay);
-        
+
         return () => {
             clearTimeout(handler);
         };
     }, [value, delay]);
-    
+
     return debouncedValue;
 };
 
@@ -53,13 +53,29 @@ const Files = () => {
     }, []);
 
     const fetchFiles = async () => {
+        const userName = localStorage.getItem('user_name');
+
+        if (!userName) {
+            console.error('User not logged in');
+            return;
+        }
+
         try {
-            const response = await axios.get('https://cloud-file-storage-backend.vercel.app/api/files');
+            const url="https://cloud-file-storage-backend.vercel.app/api/files"
+            // const url="http://localhost:3000/api/files"
+            const response = await axios.get(
+                url,
+                {
+                    params: { user_name: userName },
+                }
+            );
+
             setFiles(response.data);
         } catch (error) {
             console.error('Error fetching files:', error);
         }
     };
+
 
     const handleDrop = (acceptedFiles) => {
         const filteredFiles = acceptedFiles.filter(file => file.size <= MAX_FILE_SIZE);
@@ -72,8 +88,20 @@ const Files = () => {
     };
 
     const handleUpload = async () => {
-        if (fileContents.length === 0 || fileNames.length === 0) {
-            setNotification({ type: 'error', message: 'Please select files to upload.' });
+        if (!fileContents.length || !fileNames.length) {
+            setNotification({
+                type: 'error',
+                message: 'Please select files to upload.',
+            });
+            return;
+        }
+
+        const userName = localStorage.getItem('user_name');
+        if (!userName) {
+            setNotification({
+                type: 'error',
+                message: 'User not logged in. Please login again.',
+            });
             return;
         }
 
@@ -81,44 +109,59 @@ const Files = () => {
         setUploadProgress(0);
 
         const formData = new FormData();
-        fileContents.forEach((fileContent) => {
-            formData.append('files', fileContent);
+
+        fileContents.forEach((file) => {
+            formData.append('files', file);
         });
+
         formData.append('fileNames', JSON.stringify(fileNames));
+        formData.append('user_name', userName);
 
         try {
-            const url = s < 10000000
-                ? 'https://cloud-file-storage-backend.vercel.app/api/upload'
-                : 'https://cloud-file-storage-backend-2pr4.onrender.com/api/upload';
+            const url ="https://cloud-file-storage-backend.vercel.app/api/upload";
+            // const url = "http://localhost:3000/api/upload";
 
             await axios.post(url, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
                 onUploadProgress: (progressEvent) => {
-                    if (progressEvent.total > 0) {
-                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    if (progressEvent.total) {
+                        const percentCompleted = Math.round(
+                            (progressEvent.loaded * 100) / progressEvent.total
+                        );
                         setUploadProgress(percentCompleted);
                     }
-                }
+                },
             });
 
-            setNotification({ message: 'File uploaded successfully', type: 'success' });
+            setNotification({
+                type: 'success',
+                message: 'Files uploaded successfully.',
+            });
+
             setFileContents([]);
             setFileNames([]);
             fetchFiles();
         } catch (error) {
-            setNotification({ type: 'error', message: 'Failed to upload files. Please try again.' });
+            console.error(error);
+            setNotification({
+                type: 'error',
+                message: 'Failed to upload files. Please try again.',
+            });
         } finally {
             setLoading(false);
             setUploadProgress(0);
         }
     };
 
+
     const handleDownloadFile = (fileURL, id) => {
         setDownloadingFileId(id);
         try {
             const link = document.createElement('a');
             link.href = fileURL;
-            link.target="_blank";
+            link.target = "_blank";
             link.download = fileURL.split('/').pop();
             document.body.appendChild(link);
             link.click();
@@ -153,12 +196,12 @@ const Files = () => {
             return isSubsequence(query, fileName);
         });
     }, [files, debouncedSearchQuery]);
-    
+
 
     return (
         <section id="files" className="p-6 bg-white dark:bg-gray-900 text-white min-h-screen">
             <h3 className="text-3xl font-extrabold text-center mb-8 text-slate-800 dark:text-white">Manage Files</h3>
-            
+
             <UploadSection
                 fileNames={fileNames}
                 handleDrop={handleDrop}
@@ -166,7 +209,7 @@ const Files = () => {
                 loading={loading}
                 uploadProgress={uploadProgress}
             />
-            
+
             <div className="flex flex-row justify-between items-center my-8 gap-2">
                 <input
                     type="search"

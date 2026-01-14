@@ -6,7 +6,7 @@ import { FaFileAlt, FaDatabase, FaStickyNote, FaDownload, FaChartPie, FaChartBar
 const Statistics = () => {
     const [data, setData] = useState({
         totalFiles: 0,
-        storageUsed: 0,
+        totalUsedBytes: 0,
         downloads: 0,
     });
     const [fileFormats, setFileFormats] = useState([]);
@@ -17,16 +17,25 @@ const Statistics = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                
+
+                const userName = localStorage.getItem('user_name');
+                if (!userName) {
+                    throw new Error('User not logged in');
+                }
+
                 // Fetch statistics
-                const statsResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/statistics');
+                const statsResponse = await fetch(
+                    `https://cloud-file-storage-backend.vercel.app/api/statistics?user_name=${encodeURIComponent(userName)}`
+                );
                 if (!statsResponse.ok) throw new Error('Failed to fetch statistics');
                 const statsResult = await statsResponse.json();
+                console.log(statsResult)
                 setData(statsResult);
 
-
                 // Fetch file formats
-                const formatsResponse = await fetch('https://cloud-file-storage-backend.vercel.app/api/file-formats');
+                const formatsResponse = await fetch(
+                    `https://cloud-file-storage-backend.vercel.app/api/file-formats?user_name=${encodeURIComponent(userName)}`
+                );
                 if (!formatsResponse.ok) throw new Error('Failed to fetch file formats');
                 const formatsResult = await formatsResponse.json();
                 setFileFormats(formatsResult.formats || []);
@@ -38,6 +47,7 @@ const Statistics = () => {
             }
         };
 
+
         fetchData();
     }, []);
 
@@ -46,12 +56,24 @@ const Statistics = () => {
     }, [fileFormats]);
 
     const COLORS = ['#4C51BF', '#38B2AC', '#ED8936', '#E53E3E', '#805AD5', '#319795', '#D69E2E'];
+    const TOTAL_QUOTA_BYTES = 512 * 1024 * 1024; // 512 MB
 
-    const formatStorage = (gb) => {
-        if (gb >= 1000) return `${(gb / 1000).toFixed(1)} TB`;
-        if (gb < 1) return `${(gb * 1024).toFixed(0)} MB`;
-        return `${gb.toFixed(1)} GB`;
+    const formatStorage = (bytes) => {
+        if (bytes === 0) return '0 B';
+
+        const KB = 1024;
+        const MB = KB * 1024;
+        const GB = MB * 1024;
+        const TB = GB * 1024;
+
+        if (bytes >= TB) return `${(bytes / TB).toFixed(1)} TB`;
+        if (bytes >= GB) return `${(bytes / GB).toFixed(1)} GB`;
+        if (bytes >= MB) return `${(bytes / MB).toFixed(0)} MB`;
+        if (bytes >= KB) return `${(bytes / KB).toFixed(0)} KB`;
+
+        return `${bytes} B`;
     };
+
 
     if (loading) {
         return (
@@ -71,7 +93,7 @@ const Statistics = () => {
                     <div className="text-red-500 text-5xl mb-4">⚠️</div>
                     <h2 className="text-2xl font-bold text-red-700 mb-2">Data Loading Error</h2>
                     <p className="text-gray-600 mb-6">{error}</p>
-                    <button 
+                    <button
                         className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200"
                         onClick={() => window.location.reload()}
                     >
@@ -113,14 +135,17 @@ const Statistics = () => {
                             </div>
                             <div className="ml-4">
                                 <h3 className="text-gray-500 font-medium">Storage Used</h3>
-                                <p className="text-3xl font-bold text-gray-800">{formatStorage(data.storageUsed)}</p>
+                                <p className="text-3xl font-bold text-gray-800">{formatStorage(data.totalUsedBytes)}</p>
                             </div>
                         </div>
                         <div className="mt-4 pt-4 border-t border-gray-100">
                             <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div 
-                                    className="bg-purple-600 h-2 rounded-full" 
-                                    style={{ width: `${Math.min(data.storageUsed / 512 * 1000, 100)}%` }}
+                                <div
+                                    className="bg-purple-600 h-2 rounded-full"
+                                    style={{
+                                        width: `${Math.min((data.totalUsedBytes / (512 * 1024 * 1024)) * 100, 100)}%`
+                                    }}
+
                                 ></div>
                             </div>
                             <p className="text-gray-500 text-sm mt-2">512 MB available</p>
@@ -168,7 +193,7 @@ const Statistics = () => {
                             </h2>
                             <div className="text-sm text-gray-500">By file count</div>
                         </div>
-                        
+
                         <div className="flex flex-col items-center">
                             {pieData.length > 0 ? (
                                 <div className="w-full h-[400px]">
@@ -189,15 +214,15 @@ const Statistics = () => {
                                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip 
+                                            <Tooltip
                                                 formatter={(value) => [`${value} files`, 'Count']}
-                                                contentStyle={{ 
-                                                    borderRadius: '8px', 
+                                                contentStyle={{
+                                                    borderRadius: '8px',
                                                     border: '1px solid #e5e7eb',
                                                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                                                 }}
                                             />
-                                            <Legend 
+                                            <Legend
                                                 layout="horizontal"
                                                 verticalAlign="bottom"
                                                 align="center"
@@ -226,39 +251,39 @@ const Statistics = () => {
                             </h2>
                             <div className="text-sm text-gray-500">Top file formats</div>
                         </div>
-                        
+
                         {pieData.length > 0 ? (
                             <div className="w-full h-[400px]">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart 
-                                        data={pieData} 
+                                    <BarChart
+                                        data={pieData}
                                         margin={{ top: 20, right: 30, left: 0, bottom: 40 }}
                                     >
-                                        <XAxis 
-                                            dataKey="name" 
-                                            axisLine={false} 
+                                        <XAxis
+                                            dataKey="name"
+                                            axisLine={false}
                                             tickLine={false}
                                             tick={{ fill: '#6b7280', fontSize: 12 }}
                                             angle={-45}
                                             textAnchor="end"
                                             height={60}
                                         />
-                                        <YAxis 
-                                            axisLine={false} 
+                                        <YAxis
+                                            axisLine={false}
                                             tickLine={false}
                                             tick={{ fill: '#6b7280', fontSize: 12 }}
                                         />
-                                        <Tooltip 
+                                        <Tooltip
                                             formatter={(value) => [`${value} files`, 'Count']}
-                                            contentStyle={{ 
-                                                borderRadius: '8px', 
+                                            contentStyle={{
+                                                borderRadius: '8px',
                                                 border: '1px solid #e5e7eb',
                                                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                                             }}
                                         />
-                                        <Bar 
-                                            dataKey="value" 
-                                            name="File Count" 
+                                        <Bar
+                                            dataKey="value"
+                                            name="File Count"
                                             radius={[4, 4, 0, 0]}
                                         >
                                             {pieData.map((entry, index) => (
